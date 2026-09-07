@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Học Tập Toán 7 - Chương 1: Số Hữu Tỉ</title>
+    <style>
+        :root {
+            --primary: #4a90e2;
+            --success: #2ecc71;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --dark: #2c3e50;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #f4f6f9; color: #333; line-height: 1.6; }
+
+        header { background: var(--primary); color: white; text-align: center; padding: 1.5rem; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        
+        .tabs { display: flex; justify-content: center; background: white; border-bottom: 2px solid #ddd; position: sticky; top: 0; z-index: 100; flex-wrap: wrap; }
+        .tab-btn { padding: 1rem 1.5rem; border: none; background: none; font-size: 1rem; font-weight: bold; color: #666; cursor: pointer; transition: 0.3s; }
+        .tab-btn:hover { color: var(--primary); }
+        .tab-btn.active { color: var(--primary); border-bottom: 4px solid var(--primary); }
+
+        .container { max-width: 1000px; margin: 2rem auto; padding: 0 1rem; }
+        .tab-content { display: none; background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .tab-content.active { display: block; }
+
+        select, input[type="text"], textarea { padding: 0.6rem; font-size: 1rem; border-radius: 5px; border: 1px solid #ccc; margin-bottom: 1rem; width: 100%; }
+        textarea { height: 160px; font-family: inherit; }
+        
+        .card { background: #fff; border: 1px solid #e1e8ed; border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem; }
+        
+        #summary-display, #sgk-display { white-space: pre-wrap; }
+
+        .badge { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.8rem; font-weight: bold; color: white; margin-bottom: 0.5rem; }
+        .bg-biet { background-color: #3498db; }
+        .bg-hieu { background-color: #2ecc71; }
+        .bg-vdt { background-color: #f39c12; }
+        .bg-vdc { background-color: #e74c3c; }
+
+        .option-btn { display: block; width: 100%; text-align: left; padding: 0.8rem; margin: 0.5rem 0; border: 1px solid #ddd; border-radius: 5px; background: #f9f9f9; cursor: pointer; transition: 0.2s; }
+        .option-btn:hover { background: #edf2f7; }
+        .feedback { margin-top: 0.8rem; padding: 0.8rem; border-radius: 5px; display: none; font-weight: bold; }
+        .feedback.correct { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .feedback.incorrect { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+
+        .score-box { background: #e8f4fd; border: 2px dashed var(--primary); padding: 1.5rem; border-radius: 8px; text-align: center; margin-top: 1.5rem; display: none; }
+        .score-box h3 { color: var(--primary); font-size: 1.5rem; }
+
+        .admin-panel { background: #eef2f5; padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem; border-left: 5px solid var(--dark); }
+        .sub-panel { background: #ffffff; padding: 1.2rem; border-radius: 6px; margin-top: 1rem; border: 1px solid #cbd5e1; }
+        
+        button.btn-action { background: var(--success); color: white; font-weight: bold; border: none; padding: 0.7rem 1.2rem; border-radius: 5px; cursor: pointer; font-size: 0.95rem; margin-right: 0.5rem; margin-top: 0.5rem; }
+        button.btn-action:hover { opacity: 0.9; }
+        button.btn-reset { background: var(--danger); }
+        button.btn-submit { background: var(--primary); font-size: 1.1rem; width: 100%; padding: 1rem; margin-top: 1rem; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>CỔNG HỌC TẬP TOÁN 7 - KẾT NỐI TRÍ THỨC</h1>
+    <p>Chương 1: Số Hữu Tỉ</p>
+</header>
+
+<div class="tabs">
+    <button class="tab-btn active" onclick="switchTab(0)">Tab 1: Tóm Tắt Lý Thuyết</button>
+    <button class="tab-btn" onclick="switchTab(1)">Tab 2: Luyện Tập Trắc Nghiệm</button>
+    <button class="tab-btn" onclick="switchTab(2)">Tab 3: Kiểm Tra Tổng Hợp</button>
+    <button class="tab-btn" style="color: #27ae60;" onclick="switchTab(3)">📖 Giải SGK Chi Tiết</button>
+    <button class="tab-btn" style="color: var(--danger);" onclick="switchTab(4)">⚙️ Quản Trị Nội Dung 🔒</button>
+</div>
+
+<div class="container">
+
+    <!-- TAB 1: TÓM TẮT LÝ THUYẾT -->
+    <div class="tab-content active" id="tab-1">
+        <h2>Tóm Tắt Kiến Thức Trọng Tâm Chương 1</h2>
+        <label for="select-lesson-summary"><strong>Chọn Bài Học:</strong></label><br>
+        <select id="select-lesson-summary" onchange="loadSummary()"></select>
+        <div id="summary-display" class="card"></div>
+    </div>
+
+    <!-- TAB 2: LUYỆN TẬP TRẮC NGHIỆM -->
+    <div class="tab-content" id="tab-2">
+        <h2>Luyện Tập Trắc Nghiệm Từng Bài</h2>
+        <p style="margin-bottom: 1rem; font-style: italic;">Cấu trúc: 4 Nhận biết | 3 Thông hiểu | 2 Vận dụng thấp | 1 Vận dụng cao</p>
+        <label for="select-lesson-quiz"><strong>Chọn Bài Luyện Tập:</strong></label><br>
+        <select id="select-lesson-quiz" onchange="loadQuiz()"></select>
+        <div id="quiz-container"></div>
+    </div>
+
+    <!-- TAB 3: KIỂM TRA TỔNG HỢP -->
+    <div class="tab-content" id="tab-3">
+        <h2>Kiểm Tra Tổng Hợp Chương 1 (10 Câu)</h2>
+        <p style="margin-bottom: 1rem; font-style: italic;">Ma trận đề: 4 Nhận biết | 3 Thông hiểu | 2 Vận dụng thấp | 1 Vận dụng cao</p>
+        
+        <div class="admin-panel">
+            <h3>⚙️ Bảng Điều Khiển Quản Trị (Giáo viên)</h3>
+            <label class="toggle-switch">
+                <input type="checkbox" id="admin-toggle" checked onclick="toggleExamVisibility(event)"> 
+                <strong>Cho phép học sinh xem và làm Đề Kiểm Tra</strong>
+            </label>
+        </div>
+
+        <div id="exam-wrapper">
+            <div class="card">
+                <h3>ĐỀ KIỂM TRA TỔNG HỢP CHƯƠNG 1</h3>
+                <p><em>Thời gian: 15 phút - Tự động chấm điểm và tính tổng điểm khi nộp bài</em></p>
+                <hr style="margin: 1rem 0;">
+                <div id="exam-questions"></div>
+                <button class="btn-action btn-submit" onclick="submitExam()">NỘP BÀI VÀ XEM KẾT QUẢ</button>
+                <div id="exam-score-box" class="score-box">
+                    <h3 id="score-text">Kết quả của bạn</h3>
+                    <p id="score-details" style="font-size: 1.1rem; margin-top: 0.5rem;"></p>
+                </div>
+            </div>
+        </div>
+
+        <div id="exam-hidden-msg" style="display: none;" class="card">
+            <p style="color: var(--danger); font-weight: bold; text-align: center;">
+                🚫 Đề kiểm tra đã bị ẩn bởi Quản trị viên. Học sinh vui lòng quay lại sau!
+            </p>
+        </div>
+    </div>
+
+    <!-- TAB GIẢI SGK -->
+    <div class="tab-content" id="tab-sgk">
+        <h2>📖 Lời Giải Chi Tiết Bài Tập SGK Chương 1 - KNTT</h2>
+        <p style="margin-bottom: 1rem; color: #555;">Tra cứu lời giải bài tập chi tiết đầy đủ từng bài học thuộc Chương 1.</p>
+        
+        <label for="select-lesson-sgk"><strong>Chọn Bài Cần Xem Lời Giải:</strong></label><br>
+        <select id="select-lesson-sgk" onchange="loadSgkSolution()"></select>
+
+        <div id="sgk-display" class="card" style="background-color: #fafbfc; border-left: 5px solid var(--primary);"></div>
+    </div>
+
+    <!-- TAB 4: QUẢN TRỊ DÁN NỘI DUNG -->
+    <div class="tab-content" id="tab-4">
+        <h2>⚙️ Quản Trị Tùy Biến Nội Dung Chương 1</h2>
+        <p style="margin-bottom: 1.5rem; color: #555;">Bàn làm việc dành cho Quản trị viên/Giáo viên để thay đổi, thêm hoặc xóa nội dung của Tab 1, Tab 2, Tab 3 và cả Tab Giải SGK.</p>
+
+        <!-- 1. QUẢN LÝ TAB 1 (LÝ THUYẾT) -->
+        <div class="admin-panel">
+            <h3>1. Cập Nhật & Xóa Lý Thuyết (Tab 1)</h3>
+            <label>Chọn Bài Cần Quản Lý Lý Thuyết:</label>
+            <select id="admin-summary-lesson" onchange="syncAdminSummary()"></select>
+            <label>Nội dung lý thuyết hiện tại:</label>
+            <textarea id="admin-summary-input" placeholder="Dán nội dung lý thuyết từ Word/PDF vào đây..."></textarea>
+            <button class="btn-action" onclick="saveAdminSummary()">💾 Lưu Lý Thuyết Tab 1</button>
+            <button class="btn-action btn-reset" onclick="deleteAdminSummary()">🗑️ Xóa Lý Thuyết Bài Này</button>
+        </div>
+
+        <!-- 2. QUẢN LÝ TAB 2 (TRẮC NGHIỆM) -->
+        <div class="admin-panel">
+            <h3>2. Quản Lý Câu Hỏi Luyện Tập (Tab 2)</h3>
+            <div class="sub-panel">
+                <h4 style="color: var(--primary); margin-bottom: 0.8rem;">Thêm Câu Hỏi Mới</h4>
+                <label>Chọn Bài Luyện Tập Cần Thêm:</label>
+                <select id="admin-quiz-lesson" onchange="renderAdminQuizList()"></select>
+                <label>Mức Độ Câu Hỏi:</label>
+                <select id="admin-quiz-level">
+                    <option value="biet">Nhận biết</option>
+                    <option value="hieu">Thông hiểu</option>
+                    <option value="vdt">Vận dụng thấp</option>
+                    <option value="vdc">Vận dụng cao</option>
+                </select>
+                <label>Nội dung câu hỏi:</label>
+                <input type="text" id="admin-quiz-text" placeholder="Nhập câu hỏi...">
+                <label>Các đáp án (Nhập 4 phương án):</label>
+                <input type="text" id="admin-quiz-opt0" placeholder="Đáp án A">
+                <input type="text" id="admin-quiz-opt1" placeholder="Đáp án B">
+                <input type="text" id="admin-quiz-opt2" placeholder="Đáp án C">
+                <input type="text" id="admin-quiz-opt3" placeholder="Đáp án D">
+                <label>Đáp án ĐÚNG:</label>
+                <select id="admin-quiz-correct">
+                    <option value="0">Đáp án A</option>
+                    <option value="1">Đáp án B</option>
+                    <option value="2">Đáp án C</option>
+                    <option value="3">Đáp án D</option>
+                </select>
+                <label>Lời giải thích chi tiết:</label>
+                <input type="text" id="admin-quiz-explain" placeholder="Giải thích vì sao đúng...">
+                <button class="btn-action" onclick="addAdminQuiz()">➕ Thêm Câu Hỏi Mới</button>
+            </div>
+            
+            <div class="sub-panel" style="margin-top: 1rem;">
+                <h4 style="color: var(--dark); margin-bottom: 0.5rem;">Danh Sách Xóa Câu Hỏi Bài Luyện Tập Hiện Tại:</h4>
+                <div id="admin-quiz-list-container"></div>
+            </div>
+        </div>
+
+        <!-- 3. QUẢN LÝ TAB 3 (ĐỀ KIỂM TRA TỔNG HỢP) -->
+        <div class="admin-panel">
+            <h3>3. Quản Lý Đề Kiểm Tra Tổng Hợp (Tab 3)</h3>
+            <div class="sub-panel">
+                <h4 style="color: var(--primary); margin-bottom: 0.8rem;">Thêm Câu Hỏi Mới Vào Đề Kiểm Tra</h4>
+                <label>Mức Độ:</label>
+                <select id="admin-exam-level">
+                    <option value="biet">Nhận biết</option>
+                    <option value="hieu">Thông hiểu</option>
+                    <option value="vdt">Vận dụng thấp</option>
+                    <option value="vdc">Vận dụng cao</option>
+                </select>
+                <label>Nội dung câu hỏi:</label>
+                <input type="text" id="admin-exam-text" placeholder="Nhập câu hỏi kiểm tra mới...">
+                <label>Các đáp án:</label>
+                <input type="text" id="admin-exam-opt0" placeholder="Đáp án A">
+                <input type="text" id="admin-exam-opt1" placeholder="Đáp án B">
+                <input type="text" id="admin-exam-opt2" placeholder="Đáp án C">
+                <input type="text" id="admin-exam-opt3" placeholder="Đáp án D">
+                <label>Đáp án ĐÚNG:</label>
+                <select id="admin-exam-correct">
+                    <option value="0">Đáp án A</option>
+                    <option value="1">Đáp án B</option>
+                    <option value="2">Đáp án C</option>
+                    <option value="3">Đáp án D</option>
+                </select>
+                <label>Lời giải chi tiết:</label>
+                <input type="text" id="admin-exam-explain" placeholder="Giải thích...">
+                <button class="btn-action" onclick="addAdminExamQuestion()">➕ Thêm Vào Đề Kiểm Tra</button>
+            </div>
+
+            <div class="sub-panel" style="margin-top: 1rem;">
+                <h4 style="color: var(--dark); margin-bottom: 0.5rem;">Danh Sách Xóa Câu Hỏi Đề Kiểm Tra:</h4>
+                <div id="admin-exam-list-container"></div>
+            </div>
+        </div>
+
+        <!-- 4. QUẢN LÝ TAB LỜI GIẢI SGK -->
+        <div class="admin-panel">
+            <h3>4. Quản Lý & Cập Nhật Lời Giải SGK Chi Tiết</h3>
+            <label>Chọn Bài Cần Sửa Lời Giải:</label>
+            <select id="admin-sgk-lesson" onchange="syncAdminSgk()"></select>
+            <label>Nội dung lời giải chi tiết:</label>
+            <textarea id="admin-sgk-input" style="height: 200px;" placeholder="Nhập hoặc dán lời giải SGK mới..."></textarea>
+            <button class="btn-action" onclick="saveAdminSgk()">💾 Lưu Lời Giải SGK</button>
+            <button class="btn-action btn-reset" onclick="deleteAdminSgk()">🗑️ Xóa Lời Giải Bài Này</button>
+        </div>
+
+        <!-- KHÔI PHỤC -->
+        <div class="admin-panel" style="border-left-color: var(--danger);">
+            <h3>5. Đặt Lại Hệ Thống</h3>
+            <button class="btn-action btn-reset" onclick="resetAllData()">🔄 Khôi Phục Dữ Liệu Gốc Mặc Định</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+const PASS_TAB4_ADMIN = "123456";
+const PASS_TAB3_TOGGLE = "654321";
+let isAdminAuthenticated = false;
+
+// DANH SÁCH BÀI HỌC CHƯƠNG 1 - TOÁN 7 KNTT
+const chapter1Lessons = [
+    { id: "1_1", text: "Bài 1: Tập hợp các số hữu tỉ" },
+    { id: "1_2", text: "Bài 2: Cộng, trừ, nhân, chia số hữu tỉ" },
+    { id: "1_3", text: "Bài 3: Lũy thừa với số mũ tự nhiên của một số hữu tỉ" },
+    { id: "1_4", text: "Bài 4: Quy tắc dấu ngoặc và quy tắc chuyển tế" },
+    { id: "1_end", text: "Bài tập cuối Chương 1" }
+];
+
+function initDropdowns() {
+    const ids = ['select-lesson-summary', 'select-lesson-quiz', 'select-lesson-sgk', 'admin-summary-lesson', 'admin-quiz-lesson', 'admin-sgk-lesson'];
+    ids.forEach(id => {
+        const el = document.getElementById(id);
+        if(!el) return;
+        el.innerHTML = '';
+        chapter1Lessons.forEach(item => {
+            const opt = document.createElement('option');
+            opt.value = item.id;
+            opt.textContent = item.text;
+            el.appendChild(opt);
+        });
+    });
+}
+
+// LÝ THUYẾT CHƯƠNG 1
+const defaultSummaries = {
+    "1_1": `Bài 1: Tập hợp các số hữu tỉ\n1. Số hữu tỉ:\n- Số hữu tỉ là số viết được dưới dạng phân số a/b với a, b ∈ Z, b ≠ 0.\n- Tập hợp các số hữu tỉ được ký hiệu là Q.\n2. Biểu diễn số hữu tỉ trên trục số:\n- Mỗi số hữu tỉ được biểu diễn bởi một điểm trên trục số.\n3. Số đối của một số hữu tỉ:\n- Hai số hữu tỉ có điểm biểu diễn nằm về hai phía điểm 0 và cách đều điểm 0 gọi là hai số đối nhau.\n- Số đối của số hữu tỉ x kí hiệu là -x.`,
+    "1_2": `Bài 2: Cộng, trừ, nhân, chia số hữu tỉ\n1. Cộng, trừ hai số hữu tỉ:\n- Viết các số hữu tỉ dưới dạng phân số có cùng mẫu dương rồi thực hiện cộng, trừ tử số.\n2. Nhân, chia hai số hữu tỉ:\n- Thực hiện như nhân, chia phân số.\n- Với x, y ∈ Q (y ≠ 0): x : y = x . (1/y).`,
+    "1_3": `Bài 3: Lũy thừa với số mũ tự nhiên của một số hữu tỉ\n1. Lũy thừa với số mũ tự nhiên:\n- x^n = x . x . ... . x (n thừa số x) với x ∈ Q, n ∈ N, n > 1.\n- x^0 = 1 (x ≠ 0); x^1 = x.\n2. Tích và thương của hai lũy thừa cùng cơ số:\n- x^m . x^n = x^(m + n)\n- x^m : x^n = x^(m - n) (x ≠ 0, m ≥ n)\n3. Lũy thừa của lũy thừa:\n- (x^m)^n = x^(m . n)`,
+    "1_4": `Bài 4: Quy tắc dấu ngoặc và quy tắc chuyển tế\n1. Quy tắc dấu ngoặc:\n- Bỏ dấu ngoặc có dấu '+' đằng trước: giữ nguyên dấu các số hạng trong ngoặc.\n- Bỏ dấu ngoặc có dấu '-' đằng trước: đổi dấu tất cả các số hạng trong ngoặc.\n2. Quy tắc chuyển tế:\n- Khi chuyển một số hạng từ thế này sang thế kia của một đẳng thức, ta phải đổi dấu số hạng đó: x + y = z => x = z - y.`,
+    "1_end": `Tổng kết Chương 1 (Số hữu tỉ):\n- Khái niệm, so sánh và biểu diễn số hữu tỉ Q.\n- Thành thạo 4 phép tính: cộng, trừ, nhân, chia số hữu tỉ.\n- Áp dụng các quy tắc: Lũy thừa, Dấu ngoặc, Chuyển tế.`
+};
+
+// CÂU HỎI TRẮC NGHIỆM CHƯƠNG 1 (BÀI 1)
+const defaultQuizzes = {
+    "1_1": [
+        { level: "biet", text: "1. Kí hiệu của tập hợp các số hữu tỉ là:", options: ["A. N", "B. Z", "C. Q", "D. R"], correct: 2, explain: "Tập hợp các số hữu tỉ được kí hiệu là Q." },
+        { level: "biet", text: "2. Số nào sau đây LA số hữu tỉ?", options: ["A. 0,5", "B. -3", "C. 2/3", "D. Tất cả các số trên"], correct: 3, explain: "Mọi số nguyên, thập phân đều viết được dưới dạng a/b nên đều là số hữu tỉ." },
+        { level: "biet", text: "3. Số đối của số hữu tỉ -2/5 là:", options: ["A. 2/5", "B. -5/2", "C. 5/2", "D. -2/5"], correct: 0, explain: "Số đối của -a/b là a/b." },
+        { level: "biet", text: "4. Điểm 0 trên trục số hữu tỉ còn được gọi là:", options: ["A. Điểm âm", "B. Điểm gốc", "C. Điểm dương", "D. Điểm vô cực"], correct: 1, explain: "Điểm 0 được gọi là điểm gốc." },
+        { level: "hieu", text: "5. Khẳng định nào sau đây là SAI?", options: ["A. Số 0 không là số hữu tỉ dương, cũng không là số hữu tỉ âm", "B. Mọi số tự nhiên đều là số hữu tỉ", "C. Số hữu tỉ âm là số hữu tỉ nhỏ hơn 0", "D. Phân số -3/-4 là số hữu tỉ âm"], correct: 3, explain: "-3/-4 = 3/4 > 0 nên là số hữu tỉ dương." },
+        { level: "hieu", text: "6. So sánh x = -0,4 và y = -1/5:", options: ["A. x < y", "B. x > y", "C. x = y", "D. Không so sánh được"], correct: 0, explain: "y = -1/5 = -0,2. Vì -0,4 < -0,2 nên x < y." },
+        { level: "hieu", text: "7. Cho x = -3/7. Số đối của -x là:", options: ["A. 3/7", "B. -3/7", "C. 7/3", "D. -7/3"], correct: 1, explain: "-x = 3/7. Số đối của -x tức là đối của 3/7 chính là -3/7." },
+        { level: "vdt", text: "8. Giá trị nào của x thỏa mãn |x| = 2,5?", options: ["A. x = 2,5", "B. x = -2,5", "C. x = 2,5 hoặc x = -2,5", "D. x = 0"], correct: 2, explain: "Cả 2,5 và -2,5 đều có giá trị tuyệt đối bằng 2,5." },
+        { level: "vdt", text: "9. Rút gọn phân số -12/18 về dạng phân số tối giản ta được:", options: ["A. -2/3", "B. 2/3", "C. -3/2", "D. -6/9"], correct: 0, explain: "Chia cả tử và mẫu cho 6 ta được -2/3." },
+        { level: "vdc", text: "10. Cho A = (1/2) . (2/3) . (3/4) ... (99/100). Giá trị của A là:", options: ["A. 1/100", "B. 1/50", "C. 99/100", "D. 1/2"], correct: 0, explain: "Triệt tiêu các tử và mẫu số trung gian ta thu được A = 1/100." }
+    ]
+};
+
+// ĐỀ KIỂM TRA TỔNG HỢP CHƯƠNG 1
+const defaultExam = [
+    { level: "biet", text: "Câu 1: Tập hợp các số hữu tỉ được ký hiệu là:", options: ["A. N", "B. Z", "C. Q", "D. R"], correct: 2, explain: "Tập hợp số hữu tỉ là Q." },
+    { level: "biet", text: "Câu 2: Số đối của số -3/4 là:", options: ["A. 3/4", "B. -4/3", "C. 4/3", "D. -3/4"], correct: 0, explain: "Số đối của -3/4 là 3/4." },
+    { level: "biet", text: "Câu 3: Kết quả của phép tính (-1/2) + (3/2) là:", options: ["A. 1", "B. 2/2", "C. -1", "D. 1/2"], correct: 0, explain: "(-1 + 3)/2 = 2/2 = 1." },
+    { level: "biet", text: "Câu 4: Lũy thừa (-2/3)^2 có giá trị bằng:", options: ["A. -4/9", "B. 4/9", "C. -4/6", "D. 4/6"], correct: 1, explain: "(-2/3) * (-2/3) = 4/9." },
+    { level: "hieu", text: "Câu 5: Khi chuyển số hạng x từ thế này sang thế kia của một đẳng thức, ta phải:", options: ["A. Giữ nguyên dấu", "B. Đổi dấu x", "C. Nhân x với -1", "D. Chia x cho -1"], correct: 1, explain: "Theo quy tắc chuyển tế: Chuyển vế thì đổi dấu." },
+    { level: "hieu", text: "Câu 6: Kết quả của phép tính (2/3)^5 : (2/3)^3 là:", options: ["A. (2/3)^2", "B. (2/3)^8", "C. (2/3)^15", "D. 2/3"], correct: 0, explain: "Giữ nguyên cơ số, trừ số mũ: 5 - 3 = 2." },
+    { level: "hieu", text: "Câu 7: Tìm x biết: x + 1/3 = 2/3", options: ["A. x = 1/3", "B. x = -1/3", "C. x = 1", "D. x = 0"], correct: 0, explain: "x = 2/3 - 1/3 = 1/3." },
+    { level: "vdt", text: "Câu 8: Thực hiện bỏ dấu ngoặc của biểu thức A = -(a - b + c) ta được:", options: ["A. -a + b - c", "B. -a - b + c", "C. -a + b + c", "D. a - b + c"], correct: 0, explain: "Đổi dấu tất cả số hạng trong ngoặc khi đằng trước có dấu trừ." },
+    { level: "vdt", text: "Câu 9: Tính nhanh B = 1,25 . (-3/7) . 8", options: ["A. -3", "B. 3", "C. -10", "D. -15/7"], correct: 0, explain: "B = (1,25 . 8) . (-3/7) = 10 . (-3/7)... Chú ý 1,25 . 8 = 10." },
+    { level: "vdc", text: "Câu 10: Tìm x biết (x - 1/2)^2 = 1/4:", options: ["A. x = 1 hoặc x = 0", "B. x = 1", "C. x = 0", "D. x = 1/2"], correct: 0, explain: "TH1: x - 1/2 = 1/2 => x = 1; TH2: x - 1/2 = -1/2 => x = 0." }
+];
+
+// LỜI GIẢI SGK CHI TIẾT CHƯƠNG 1 TOÁN 7 KNTT
+const defaultSgk = {
+    "1_1": `LỜI GIẢI BÀI 1: TẬP HỢP CÁC SỐ HỮU TỈ (SGK TRANG 7, 8, 9)\n\nBài 1.1 (Trang 9):\nHãy biểu diễn các số sau dưới dạng phân số: 0,6; -1,25; 1 1/3.\nLời giải:\n- 0,6 = 6/10 = 3/5.\n- -1,25 = -125/100 = -5/4.\n- 1 1/3 = (1 . 3 + 1)/3 = 4/3.\n\nBài 1.2 (Trang 9):\nĐiền ký hiệu (∈, ∉) thích hợp vào ô trống:\na) -3 ... N ; b) -3 ... Z ; c) -3 ... Q ; d) -2/3 ... Z ; e) -2/3 ... Q\nLời giải:\na) -3 ∉ N\nb) -3 ∈ Z\nc) -3 ∈ Q\nd) -2/3 ∉ Z\ne) -2/3 ∈ Q\n\nBài 1.3 (Trang 9):\nSo sánh các cặp số hữu tỉ sau:\na) -2,5 và -2,125\nb) -1/3 và 1/1000\nLời giải:\na) Ta có 2,5 > 2,125 nên -2,5 < -2,125.\nb) Vì -1/3 < 0 và 1/1000 > 0 nên -1/3 < 1/1000.\n\nBài 1.4 (Trang 9):\nBiểu diễn các số hữu tỉ sau trên cùng một trục số: 1/2; -1/2; 0; 1,5.\nLời giải:\n- Chia các đoạn đơn vị trên trục số thành các phần bằng nhau.\n- Điểm 0 trùng gốc tọa độ.\n- Điểm -1/2 nằm bên trái điểm 0 một nửa đơn vị.\n- Điểm 1/2 nằm bên phải điểm 0 một nửa đơn vị.\n- Điểm 1,5 = 3/2 nằm bên phải điểm 0 một đoạn bằng 1,5 đơn vị.\n\nBài 1.5 (Trang 9):\nTìm số đối của mỗi số sau: 2/5; -1,2; 0; -3 1/2.\nLời giải:\n- Số đối của 2/5 là -2/5.\n- Số đối của -1,2 là 1,2.\n- Số đối của 0 là 0.\n- Ta có -3 1/2 = -7/2 nên số đối của nó là 7/2 (hoặc 3 1/2).`,
+
+    "1_2": `LỜI GIẢI BÀI 2: CỘNG, TRỪ, NHÂN, CHIA SỐ HỮU TỈ (SGK TRANG 12, 13)\n\nBài 1.7 (Trang 12):\nTính:\na) (-4/5) + (3/7)\nb) (-2/3) - (-1/4)\nLời giải:\na) (-4/5) + (3/7) = (-28/35) + (15/35) = (-28 + 15)/35 = -13/35.\nb) (-2/3) - (-1/4) = (-2/3) + (1/4) = (-8/12) + (3/12) = -5/12.\n\nBài 1.8 (Trang 12):\nTính:\na) (-3/8) . (2/5)\nb) (-5/7) : (-15/14)\nLời giải:\na) (-3/8) . (2/5) = (-3 . 2) / (8 . 5) = -6/40 = -3/20.\nb) (-5/7) : (-15/14) = (-5/7) . (-14/15) = ((-5) . (-14)) / (7 . 15) = 70/105 = 2/3.\n\nBài 1.9 (Trang 13):\nTính một cách hợp lý:\nA = (-2/3) + (5/9) + (-1/3) + (4/9)\nLời giải:\nA = [(-2/3) + (-1/3)] + [(5/9) + (4/9)]\nA = (-3/3) + (9/9)\nA = (-1) + 1 = 0.\n
+Bài 1.10 (Trang 13):\nMột cơ sở sản xuất trong tháng Nhất làm được 3/10 kế hoạch năm, tháng Hai làm được 1/5 kế hoạch năm. Hỏi cả hai tháng cơ sở đó làm được bao nhiêu phần kế hoạch năm?\nLời giải:\nCả hai tháng cơ sở làm được số phần kế hoạch năm là:\n3/10 + 1/5 = 3/10 + 2/10 = 5/10 = 1/2 (kế hoạch).\nĐáp số: 1/2 kế hoạch.`,
+
+    "1_3": `LỜI GIẢI BÀI 3: LŨY THỪA VỚI SỐ MŨ TỰ NHIÊN CỦA MỘT SỐ HỮU TỈ (SGK TRANG 18, 19)\n\nBài 1.12 (Trang 18):\nTính:\na) (-1/2)^3\nb) (-3/5)^0\nc) (-0,2)^2\nLời giải:\na) (-1/2)^3 = (-1)^3 / 2^3 = -1/8.\nb) (-3/5)^0 = 1.\nc) (-0,2)^2 = 0,04.\n
+Bài 1.13 (Trang 18):\nViết các biểu thức sau dưới dạng lũy thừa của một số hữu tỉ:\na) (2/5)^3 . (2/5)^2\nb) (-1/3)^7 : (-1/3)^4\nLời giải:\na) (2/5)^3 . (2/5)^2 = (2/5)^(3 + 2) = (2/5)^5.\nb) (-1/3)^7 : (-1/3)^4 = (-1/3)^(7 - 4) = (-1/3)^3.\n
+Bài 1.14 (Trang 19):\nTính: [(1/2)^2]^3 và (1/2)^6. Rút ra nhận xét.\nLời giải:\n- [(1/2)^2]^3 = (1/4)^3 = 1/64.\n- (1/2)^6 = 1/64.\nNhận xét: [(1/2)^2]^3 = (1/2)^(2 . 3) = (1/2)^6.\n
+Bài 1.15 (Trang 19):\nTìm x, biết:\na) x : (-1/2)^3 = -1/2\nb) x . (3/5)^2 = (3/5)^4\nLời giải:\na) x = (-1/2) . (-1/2)^3 => x = (-1/2)^4 = 1/16.\nb) x = (3/5)^4 : (3/5)^2 => x = (3/5)^2 = 9/25.`,
+
+    "1_4": `LỜI GIẢI BÀI 4: QUY TẮC DẤU NGOẶC VÀ QUY TẮC CHUYỂN VẾ (SGK TRANG 22, 23)\n\nBài 1.16 (Trang 22):\nBỏ dấu ngoặc rồi tính:\na) A = (2/3 - 1/2) - (1/3 - 1/2)\nb) B = 0,5 + (2/5 - 0,5)\nLời giải:\na) A = 2/3 - 1/2 - 1/3 + 1/2 = (2/3 - 1/3) + (-1/2 + 1/2) = 1/3 + 0 = 1/3.\nb) B = 0,5 + 2/5 - 0,5 = (0,5 - 0,5) + 2/5 = 0 + 2/5 = 2/5.\n
+Bài 1.17 (Trang 23):\nTìm x, biết:\na) x + 1/3 = 2/5\nb) x - 2/7 = -3/14\nLời giải:\na) x = 2/5 - 1/3 = 6/15 - 5/15 = 1/15.\nb) x = -3/14 + 2/7 = -3/14 + 4/14 = 1/14.\n
+Bài 1.18 (Trang 23):\nTính giá trị của biểu thức một cách hợp lý:\nP = 5/8 - (1/4 - 3/8)\nLời giải:\nP = 5/8 - 1/4 + 3/8\nP = (5/8 + 3/8) - 1/4\nP = 8/8 - 1/4 = 1 - 1/4 = 3/4.`,
+
+    "1_end": `LỜI GIẢI BÀI TẬP CUỐI CHƯƠNG 1 (SGK TRANG 24, 25)\n\nBài 1.22 (Trang 24):\nSắp xếp các số hữu tỉ sau theo thứ tự tăng dần: -2/3; 0; 1/2; -5/6; 1/3.\nLời giải:\n- Quy đồng các phân số âm: -2/3 = -4/6; -5/6 giữ nguyên. Vì -5/6 < -4/6 nên -5/6 < -2/3.\n- Các số dương: 1/3 = 2/6; 1/2 = 3/6. Vì 1/3 < 1/2.\n- Số 0 nằm giữa số âm và số dương.\n=> Thứ tự tăng dần: -5/6 < -2/3 < 0 < 1/3 < 1/2.\n
+Bài 1.23 (Trang 24):\nThực hiện phép tính:\na) A = (-1/4) + 3/8 - 5/12\nb) B = (-3/5) . 5/7 + (-3/5) . 2/7\nLời giải:\na) A = -6/24 + 9/24 - 10/24 = (-6 + 9 - 10)/24 = -7/24.\nb) B = (-3/5) . (5/7 + 2/7) = (-3/5) . (7/7) = (-3/5) . 1 = -3/5.\n
+Bài 1.24 (Trang 25):\nTìm x, biết:\na) x - 3/4 = -1/2\nb) 2/3 . x + 1/4 = 7/12\nLời giải:\na) x = -1/2 + 3/4 = -2/4 + 3/4 = 1/4.\nb) 2/3 . x = 7/12 - 1/4\n   2/3 . x = 7/12 - 3/12\n   2/3 . x = 4/12 = 1/3\n   x = 1/3 : 2/3 = 1/3 . 3/2 = 1/2.\n
+Bài 1.25 (Trang 25):\nTính nhanh:\nC = (1/2)^2 . 4 + 0,75 - 5/4\nLời giải:\nC = (1/4) . 4 + 3/4 - 5/4\nC = 1 + (3/4 - 5/4)\nC = 1 + (-2/4) = 1 - 1/2 = 1/2.`
+};
+
+function switchTab(index) {
+    if (index !== 4) isAdminAuthenticated = false;
+    if (index === 4 && !isAdminAuthenticated) {
+        const pass = prompt("🔐 Nhập mật khẩu QUẢN TRỊ:");
+        if (pass === PASS_TAB4_ADMIN) {
+            isAdminAuthenticated = true;
+        } else {
+            if (pass !== null) alert("❌ Mật khẩu Quản trị không chính xác!");
+            return;
+        }
+    }
+    const tabs = document.querySelectorAll('.tab-btn');
+    const contents = document.querySelectorAll('.tab-content');
+    tabs.forEach((tab, i) => {
+        tab.classList.toggle('active', i === index);
+        contents[i].classList.toggle('active', i === index);
+    });
+}
+
+function loadSummary() {
+    const val = document.getElementById('select-lesson-summary').value;
+    document.getElementById('summary-display').textContent = defaultSummaries[val] || "Đang cập nhật nội dung lý thuyết...";
+}
+
+function loadQuiz() {
+    const val = document.getElementById('select-lesson-quiz').value;
+    const list = defaultQuizzes[val] || [];
+    const container = document.getElementById('quiz-container');
+    container.innerHTML = '';
+
+    if (list.length === 0) {
+        container.innerHTML = '<p style="padding: 1rem;">Chưa có câu hỏi luyện tập cho bài học này. Vui lòng thêm từ Bảng Quản Trị.</p>';
+        return;
+    }
+
+    list.forEach((item, index) => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        
+        let badgeClass = 'bg-biet';
+        let badgeText = 'Nhận biết';
+        if (item.level === 'hieu') { badgeClass = 'bg-hieu'; badgeText = 'Thông hiểu'; }
+        if (item.level === 'vdt') { badgeClass = 'bg-vdt'; badgeText = 'Vận dụng thấp'; }
+        if (item.level === 'vdc') { badgeClass = 'bg-vdc'; badgeText = 'Vận dụng cao'; }
+
+        let html = `<span class="badge ${badgeClass}">${badgeText}</span>`;
+        html += `<p style="font-weight: bold; margin-bottom: 0.5rem;">${item.text}</p>`;
+        
+        item.options.forEach((opt, optIdx) => {
+            html += `<button class="option-btn" onclick="checkQuizAnswer(this, ${optIdx}, ${item.correct}, '${item.explain.replace(/'/g, "\\'")}')">${opt}</button>`;
+        });
+
+        html += `<div class="feedback"></div>`;
+        card.innerHTML = html;
+        container.appendChild(card);
+    });
+}
+
+function checkQuizAnswer(btn, selected, correct, explain) {
+    const parent = btn.parentElement;
+    const feedback = parent.querySelector('.feedback');
+    const buttons = parent.querySelectorAll('.option-btn');
+    
+    buttons.forEach(b => b.disabled = true);
+
+    if (selected === correct) {
+        btn.style.background = '#d4edda';
+        btn.style.borderColor = '#c3e6cb';
+        feedback.className = 'feedback correct';
+        feedback.innerHTML = `✅ ĐÚNG RỒI! <br><strong>Giải thích:</strong> ${explain}`;
+    } else {
+        btn.style.background = '#f8d7da';
+        btn.style.borderColor = '#f5c6cb';
+        feedback.className = 'feedback incorrect';
+        feedback.innerHTML = `❌ CHƯA ĐÚNG! <br><strong>Giải thích:</strong> ${explain}`;
+    }
+    feedback.style.display = 'block';
+}
+
+function loadExam() {
+    const container = document.getElementById('exam-questions');
+    container.innerHTML = '';
+    defaultExam.forEach((item, index) => {
+        const card = document.createElement('div');
+        card.style.marginBottom = '1.5rem';
+        
+        let html = `<p style="font-weight: bold;">${item.text}</p>`;
+        item.options.forEach((opt, optIdx) => {
+            html += `<label style="display: block; margin: 0.3rem 0; cursor: pointer;">
+                <input type="radio" name="exam_q_${index}" value="${optIdx}"> ${opt}
+            </label>`;
+        });
+        card.innerHTML = html;
+        container.appendChild(card);
+    });
+}
+
+function submitExam() {
+    let score = 0;
+    defaultExam.forEach((item, index) => {
+        const selected = document.querySelector(`input[name="exam_q_${index}"]:checked`);
+        if (selected && parseInt(selected.value) === item.correct) {
+            score += 1;
+        }
+    });
+
+    const scoreBox = document.getElementById('exam-score-box');
+    const details = document.getElementById('score-details');
+    scoreBox.style.display = 'block';
+    details.innerHTML = `Bạn đạt <strong>${score} / 10</strong> điểm. (${score * 10}%)`;
+}
+
+function loadSgkSolution() {
+    const val = document.getElementById('select-lesson-sgk').value;
+    document.getElementById('sgk-display').textContent = defaultSgk[val] || "Lời giải SGK đang được cập nhật...";
+}
+
+function saveAdminSummary() {
+    const lesson = document.getElementById('admin-summary-lesson').value;
+    const content = document.getElementById('admin-summary-input').value;
+    if (!content) { alert("Vui lòng nhập nội dung!"); return; }
+    defaultSummaries[lesson] = content;
+    alert("Cập nhật lý thuyết thành công!");
+    loadSummary();
+}
+
+function addAdminQuiz() {
+    const lesson = document.getElementById('admin-quiz-lesson').value;
+    const level = document.getElementById('admin-quiz-level').value;
+    const text = document.getElementById('admin-quiz-text').value;
+    const opt0 = document.getElementById('admin-quiz-opt0').value;
+    const opt1 = document.getElementById('admin-quiz-opt1').value;
+    const opt2 = document.getElementById('admin-quiz-opt2').value;
+    const opt3 = document.getElementById('admin-quiz-opt3').value;
+    const correct = parseInt(document.getElementById('admin-quiz-correct').value);
+    const explain = document.getElementById('admin-quiz-explain').value;
+
+    if (!text || !opt0 || !opt1 || !opt2 || !opt3) {
+        alert("Vui lòng điền đầy đủ câu hỏi và 4 đáp án!");
+        return;
+    }
+
+    if (!defaultQuizzes[lesson]) {
+        defaultQuizzes[lesson] = [];
+    }
+
+    defaultQuizzes[lesson].push({
+        level: level,
+        text: text,
+        options: [opt0, opt1, opt2, opt3],
+        correct: correct,
+        explain: explain || "Không có giải thích chi tiết."
+    });
+
+    alert("Thêm câu hỏi mới thành công!");
+    loadQuiz();
+    renderAdminQuizList();
+}
+
+function resetAllData() {
+    if (confirm("Bạn có chắc chắn muốn khôi phục lại dữ liệu gốc không?")) {
+        location.reload();
+    }
+}
+
+function toggleExamVisibility(event) {
+    const pass = prompt("🔐 Nhập mật khẩu BẬT/TẮT ĐỀ (Tab 3):");
+    if (pass === PASS_TAB3_TOGGLE) {
+        const isChecked = document.getElementById('admin-toggle').checked;
+        document.getElementById('exam-wrapper').style.display = isChecked ? 'block' : 'none';
+        document.getElementById('exam-hidden-msg').style.display = isChecked ? 'none' : 'block';
+    } else {
+        if (pass !== null) alert("❌ Mật khẩu Bật/Tắt đề không chính xác!");
+        event.preventDefault();
+    }
+}
+
+// --- CÁC HÀM QUẢN TRỊ BỔ SUNG CHO TAB 5 ĐỂ SỬA / XÓA NỘI DUNG THEO Ý BẠN ---
+function syncAdminSummary() {
+    const lesson = document.getElementById('admin-summary-lesson').value;
+    document.getElementById('admin-summary-input').value = defaultSummaries[lesson] || "";
+}
+
+function deleteAdminSummary() {
+    const lesson = document.getElementById('admin-summary-lesson').value;
+    if (confirm("Bạn có chắc muốn xóa nội dung lý thuyết của bài này không?")) {
+        defaultSummaries[lesson] = "";
+        alert("Đã xóa lý thuyết thành công!");
+        loadSummary();
+        syncAdminSummary();
+    }
+}
+
+function renderAdminQuizList() {
+    const lesson = document.getElementById('admin-quiz-lesson').value;
+    const container = document.getElementById('admin-quiz-list-container');
+    container.innerHTML = '';
+    const list = defaultQuizzes[lesson] || [];
+    
+    if(list.length === 0) {
+        container.innerHTML = '<p style="color:#888; font-style:italic; font-size:0.9rem;">Bài học này hiện chưa có câu hỏi trắc nghiệm nào.</p>';
+        return;
+    }
+    
+    list.forEach((item, index) => {
+        const div = document.createElement('div');
+        div.style.padding = '0.4rem';
+        div.style.borderBottom = '1px dashed #ccc';
+        div.style.display = 'flex';
+        div.style.justifyContent = 'space-between';
+        div.style.alignItems = 'center';
+        
+        div.innerHTML = `
+            <span style="font-size:0.9rem; max-width:80%;"><strong>Câu ${index+1}:</strong> ${item.text.replace(/</g, "&lt;")}</span>
+            <button class="btn-action btn-reset" style="padding:0.2rem 0.5rem; font-size:0.8rem; margin:0;" onclick="deleteAdminQuiz(${index})">Xóa</button>
+        `;
+        container.appendChild(div);
+    });
+}
+
+function deleteAdminQuiz(index) {
+    const lesson = document.getElementById('admin-quiz-lesson').value;
+    if (confirm("Bạn có chắc muốn xóa câu hỏi này không?")) {
+        defaultQuizzes[lesson].splice(index, 1);
+        alert("Đã xóa câu hỏi luyện tập thành công!");
+        loadQuiz();
+        renderAdminQuizList();
+    }
+}
+
+function renderAdminExamList() {
+    const container = document.getElementById('admin-exam-list-container');
+    container.innerHTML = '';
+    
+    if(defaultExam.length === 0) {
+        container.innerHTML = '<p style="color:#888; font-style:italic; font-size:0.9rem;">Đề kiểm tra hiện đang trống.</p>';
+        return;
+    }
+    
+    defaultExam.forEach((item, index) => {
+        const div = document.createElement('div');
+        div.style.padding = '0.4rem';
+        div.style.borderBottom = '1px dashed #ccc';
+        div.style.display = 'flex';
+        div.style.justifyContent = 'space-between';
+        div.style.alignItems = 'center';
+        
+        div.innerHTML = `
+            <span style="font-size:0.9rem; max-width:80%;"><strong>${item.text.split(':')[0] || 'Câu ' + (index+1)}:</strong> ${item.text.substring(item.text.indexOf(':')+1 || 0).replace(/</g, "&lt;")}</span>
+            <button class="btn-action btn-reset" style="padding:0.2rem 0.5rem; font-size:0.8rem; margin:0;" onclick="deleteAdminExamQuestion(${index})">Xóa</button>
+        `;
+        container.appendChild(div);
+    });
+}
+
+function addAdminExamQuestion() {
+    const level = document.getElementById('admin-exam-level').value;
+    const text = document.getElementById('admin-exam-text').value;
+    const opt0 = document.getElementById('admin-exam-opt0').value;
+    const opt1 = document.getElementById('admin-exam-opt1').value;
+    const opt2 = document.getElementById('admin-exam-opt2').value;
+    const opt3 = document.getElementById('admin-exam-opt3').value;
+    const correct = parseInt(document.getElementById('admin-exam-correct').value);
+    const explain = document.getElementById('admin-exam-explain').value;
+
+    if (!text || !opt0 || !opt1 || !opt2 || !opt3) {
+        alert("Vui lòng nhập đầy đủ câu hỏi và 4 đáp án!");
+        return;
+    }
+
+    const nextIdx = defaultExam.length + 1;
+    defaultExam.push({
+        level: level,
+        text: `Câu ${nextIdx}: ${text}`,
+        options: [opt0, opt1, opt2, opt3],
+        correct: correct,
+        explain: explain || "Không có giải thích chi tiết."
+    });
+
+    alert("Thêm câu hỏi kiểm tra tổng hợp thành công!");
+    document.getElementById('admin-exam-text').value = '';
+    document.getElementById('admin-exam-opt0').value = '';
+    document.getElementById('admin-exam-opt1').value = '';
+    document.getElementById('admin-exam-opt2').value = '';
+    document.getElementById('admin-exam-opt3').value = '';
+    document.getElementById('admin-exam-explain').value = '';
+    
+    loadExam();
+    renderAdminExamList();
+}
+
+function deleteAdminExamQuestion(index) {
+    if (confirm("Bạn có chắc muốn xóa câu hỏi này khỏi đề kiểm tra không?")) {
+        defaultExam.splice(index, 1);
+        defaultExam.forEach((item, idx) => {
+            const rawText = item.text.substring(item.text.indexOf(':') + 1).trim();
+            item.text = `Câu ${idx + 1}: ${rawText}`;
+        });
+        alert("Đã xóa câu hỏi kiểm tra thành công!");
+        loadExam();
+        renderAdminExamList();
+    }
+}
+
+function syncAdminSgk() {
+    const lesson = document.getElementById('admin-sgk-lesson').value;
+    document.getElementById('admin-sgk-input').value = defaultSgk[lesson] || "";
+}
+
+function saveAdminSgk() {
+    const lesson = document.getElementById('admin-sgk-lesson').value;
+    const content = document.getElementById('admin-sgk-input').value;
+    if (!content) { alert("Vui lòng nhập nội dung!"); return; }
+    defaultSgk[lesson] = content;
+    alert("Cập nhật lời giải bài tập SGK thành công!");
+    loadSgkSolution();
+}
+
+function deleteAdminSgk() {
+    const lesson = document.getElementById('admin-sgk-lesson').value;
+    if (confirm("Bạn có chắc muốn xóa lời giải bài tập SGK của bài học này không?")) {
+        defaultSgk[lesson] = "";
+        alert("Đã xóa lời giải SGK thành công!");
+        loadSgkSolution();
+        syncAdminSgk();
+    }
+}
+
+window.onload = function() {
+    initDropdowns();
+    loadSummary();
+    loadQuiz();
+    loadExam();
+    loadSgkSolution();
+    
+    // Khởi tạo đồng bộ dữ liệu ban đầu cho tab Quản trị
+    syncAdminSummary();
+    renderAdminQuizList();
+    renderAdminExamList();
+    syncAdminSgk();
+};
+</script>
+</body>
+</html>
