@@ -1,1 +1,1360 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Học Tập Toán 6 - Chương 1 (KNTT)</title>
+    <style>
+        :root {
+            --primary: #4a90e2;
+            --success: #2ecc71;
+            --danger: #e74c3c;
+            --warning: #f39c12;
+            --dark: #2c3e50;
+        }
 
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #f4f6f9; color: #333; line-height: 1.6; }
+
+        header { background: var(--primary); color: white; text-align: center; padding: 1.5rem; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        
+        .tabs { display: flex; justify-content: center; background: white; border-bottom: 2px solid #ddd; position: sticky; top: 0; z-index: 100; flex-wrap: wrap; }
+        .tab-btn { padding: 1rem 1.5rem; border: none; background: none; font-size: 1rem; font-weight: bold; color: #666; cursor: pointer; transition: 0.3s; }
+        .tab-btn:hover { color: var(--primary); }
+        .tab-btn.active { color: var(--primary); border-bottom: 4px solid var(--primary); }
+
+        .container { max-width: 1000px; margin: 2rem auto; padding: 0 1rem; }
+        .tab-content { display: none; background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        .tab-content.active { display: block; }
+
+        select, input[type="text"], textarea { padding: 0.6rem; font-size: 1rem; border-radius: 5px; border: 1px solid #ccc; margin-bottom: 1rem; width: 100%; }
+        textarea { height: 160px; font-family: inherit; }
+        
+        .card { background: #fff; border: 1px solid #e1e8ed; border-radius: 8px; padding: 1.5rem; margin-bottom: 1.5rem; }
+        
+        /* HIỂN THỊ GIỮ NGUYÊN DẤU XUỐNG DÒNG TAB 1 VÀ TAB GIẢI SGK */
+        #summary-display, #sgk-display {
+            white-space: pre-wrap;
+        }
+
+        .badge { display: inline-block; padding: 0.2rem 0.6rem; border-radius: 4px; font-size: 0.8rem; font-weight: bold; color: white; margin-bottom: 0.5rem; }
+        .bg-biet { background-color: #3498db; }
+        .bg-hieu { background-color: #2ecc71; }
+        .bg-vdt { background-color: #f39c12; }
+        .bg-vdc { background-color: #e74c3c; }
+
+        .option-btn { display: block; width: 100%; text-align: left; padding: 0.8rem; margin: 0.5rem 0; border: 1px solid #ddd; border-radius: 5px; background: #f9f9f9; cursor: pointer; transition: 0.2s; }
+        .option-btn:hover { background: #edf2f7; }
+        .feedback { margin-top: 0.8rem; padding: 0.8rem; border-radius: 5px; display: none; font-weight: bold; }
+        .feedback.correct { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .feedback.incorrect { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+
+        .score-box { background: #e8f4fd; border: 2px dashed var(--primary); padding: 1.5rem; border-radius: 8px; text-align: center; margin-top: 1.5rem; display: none; }
+        .score-box h3 { color: var(--primary); font-size: 1.5rem; }
+
+        .admin-panel { background: #eef2f5; padding: 1.5rem; border-radius: 8px; margin-bottom: 1.5rem; border-left: 5px solid var(--dark); }
+        .sub-panel { background: #ffffff; padding: 1.2rem; border-radius: 6px; margin-top: 1rem; border: 1px solid #cbd5e1; }
+        
+        button.btn-action { background: var(--success); color: white; font-weight: bold; border: none; padding: 0.7rem 1.2rem; border-radius: 5px; cursor: pointer; font-size: 0.95rem; margin-right: 0.5rem; margin-top: 0.5rem; }
+        button.btn-action:hover { opacity: 0.9; }
+        button.btn-reset { background: var(--danger); }
+        button.btn-edit { background: var(--warning); }
+        button.btn-submit { background: var(--primary); font-size: 1.1rem; width: 100%; padding: 1rem; margin-top: 1rem; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>CỔNG HỌC TẬP TOÁN 6 - KẾT NỐI TRÍ THỨC</h1>
+    <p>Chương 1: Tập hợp các số tự nhiên</p>
+</header>
+
+<div class="tabs">
+    <button class="tab-btn active" onclick="switchTab(0)">Tab 1: Tóm Tắt Lý Thuyết</button>
+    <button class="tab-btn" onclick="switchTab(1)">Tab 2: Luyện Tập (10 Câu/Bài)</button>
+    <button class="tab-btn" onclick="switchTab(2)">Tab 3: Kiểm Tra Tổng Hợp</button>
+    <button class="tab-btn" style="color: #27ae60;" onclick="switchTab(3)">📖 Giải SGK Chi Tiết</button>
+    <button class="tab-btn" style="color: var(--danger);" onclick="switchTab(4)">⚙️ Quản Trị Nội Dung 🔒</button>
+</div>
+
+<div class="container">
+
+    <!-- TAB 1: TÓM TẮT LÝ THUYẾT -->
+    <div class="tab-content active" id="tab-1">
+        <h2>Tóm Tắt Kiến Thức Trọng Tâm Chương 1</h2>
+        <label for="select-lesson-summary"><strong>Chọn Bài Học:</strong></label><br>
+        <select id="select-lesson-summary" onchange="loadSummary()">
+            <option value="1">Bài 1: Tập hợp. Phần tử của tập hợp</option>
+            <option value="2">Bài 2: Cách ghi số tự nhiên</option>
+            <option value="3">Bài 3: Thứ tự trong tập hợp các số tự nhiên</option>
+            <option value="4">Bài 4: Phép cộng và phép trừ số tự nhiên</option>
+            <option value="5">Bài 5: Phép nhân và phép chia số tự nhiên</option>
+            <option value="6">Bài 6: Lũy thừa với số mũ tự nhiên</option>
+            <option value="7">Bài 7: Thứ tự thực hiện các phép tính</option>
+        </select>
+
+        <div id="summary-display" class="card">
+            <!-- Tải nội dung lý thuyết tự động -->
+        </div>
+    </div>
+
+    <!-- TAB 2: LUYỆN TẬP 10 CÂU TRẮC NGHIỆM TỪNG BÀI -->
+    <div class="tab-content" id="tab-2">
+        <h2>Luyện Tập Trắc Nghiệm Từng Bài</h2>
+        <p style="margin-bottom: 1rem; font-style: italic;">Cấu trúc: 4 Nhận biết | 3 Thông hiểu | 2 Vận dụng thấp | 1 Vận dụng cao</p>
+        <label for="select-lesson-quiz"><strong>Chọn Bài Luyện Tập:</strong></label><br>
+        <select id="select-lesson-quiz" onchange="loadQuiz()">
+            <option value="1">Bài 1: Tập hợp</option>
+            <option value="2">Bài 2: Cách ghi số tự nhiên</option>
+            <option value="3">Bài 3: Thứ tự trong tập hợp số tự nhiên</option>
+            <option value="4">Bài 4: Phép cộng và phép trừ</option>
+            <option value="5">Bài 5: Phép nhân và phép chia</option>
+            <option value="6">Bài 6: Lũy thừa với số mũ tự nhiên</option>
+            <option value="7">Bài 7: Thứ tự thực hiện các phép tính</option>
+        </select>
+
+        <div id="quiz-container">
+            <!-- Tải 10 câu trắc nghiệm tự động -->
+        </div>
+    </div>
+
+    <!-- TAB 3: KIỂM TRA TỔNG HỢP -->
+    <div class="tab-content" id="tab-3">
+        <h2>Kiểm Tra Tổng Hợp Chương 1 (10 Câu)</h2>
+        <p style="margin-bottom: 1rem; font-style: italic;">Ma trận đề: 4 Nhận biết | 3 Thông hiểu | 2 Vận dụng thấp | 1 Vận dụng cao</p>
+        
+        <div class="admin-panel">
+            <h3>⚙️ Bảng Điều Khiển Quản Trị (Giáo viên)</h3>
+            <label class="toggle-switch">
+                <input type="checkbox" id="admin-toggle" checked onclick="toggleExamVisibility(event)"> 
+                <strong>Cho phép học sinh xem và làm Đề Kiểm Tra</strong>
+            </label>
+        </div>
+
+        <div id="exam-wrapper">
+            <div class="card">
+                <h3>ĐỀ KIỂM TRA TỔNG HỢP CHƯƠNG 1</h3>
+                <p><em>Thời gian: 15 phút - Tự động chấm điểm và tính tổng điểm khi nộp bài</em></p>
+                <hr style="margin: 1rem 0;">
+                
+                <div id="exam-questions">
+                    <!-- Tải 10 câu kiểm tra tự động -->
+                </div>
+
+                <button class="btn-action btn-submit" onclick="submitExam()">NỘP BÀI VÀ XEM KẾT QUẢ</button>
+
+                <div id="exam-score-box" class="score-box">
+                    <h3 id="score-text">Kết quả của bạn</h3>
+                    <p id="score-details" style="font-size: 1.1rem; margin-top: 0.5rem;"></p>
+                </div>
+            </div>
+        </div>
+
+        <div id="exam-hidden-msg" style="display: none;" class="card">
+            <p style="color: var(--danger); font-weight: bold; text-align: center;">
+                🚫 Đề kiểm tra đã bị ẩn bởi Quản trị viên. Học sinh vui lòng quay lại sau!
+            </p>
+        </div>
+    </div>
+
+    <!-- TAB MỚI: GIẢI CHI TIẾT BÀI TẬP SGK TOÁN 6 KNTT CHƯƠNG 1 -->
+    <div class="tab-content" id="tab-sgk">
+        <h2>📖 Lời Giải Chi Tiết Bài Tập SGK Toán 6 - Kết Nối Tri Thức (Chương 1)</h2>
+        <p style="margin-bottom: 1rem; color: #555;">Tra cứu lời giải bài tập chi tiết đầy đủ từng bài học và bài tập cuối chương 1.</p>
+        
+        <label for="select-lesson-sgk"><strong>Chọn Bài Cần Xem Lời Giải:</strong></label><br>
+        <select id="select-lesson-sgk" onchange="loadSgkSolution()">
+            <option value="1">Bài 1: Tập hợp. Phần tử của tập hợp (Bài 1.1 đến 1.5)</option>
+            <option value="2">Bài 2: Cách ghi số tự nhiên (Bài 1.6 đến 1.12)</option>
+            <option value="3">Bài 3: Thứ tự trong tập hợp các số tự nhiên (Bài 1.13 đến 1.16)</option>
+            <option value="4">Bài 4: Phép cộng và phép trừ số tự nhiên (Bài 1.17 đến 1.22)</option>
+            <option value="5">Bài 5: Phép nhân và phép chia số tự nhiên (Bài 1.23 đến 1.30)</option>
+            <option value="6">Bài 6: Lũy thừa với số mũ tự nhiên (Bài 1.31 đến 1.35)</option>
+            <option value="7">Bài 7: Thứ tự thực hiện các phép tính (Bài 1.36 đến 1.45)</option>
+            <option value="8">Bài Tập Cuối Chương 1 (Bài 1.46 đến 1.59)</option>
+        </select>
+
+        <div id="sgk-display" class="card" style="background-color: #fafbfc; border-left: 5px solid var(--primary);">
+            <!-- Nội dung bài giải SGK hiển thị tự động -->
+        </div>
+    </div>
+
+    <!-- TAB 4: QUẢN TRỊ DÁN NỘI DUNG -->
+    <div class="tab-content" id="tab-4">
+        <h2>⚙️ Quản Trị Tùy Biến Nội Dung Web</h2>
+        <p style="margin-bottom: 1.5rem; color: #555;">Bàn làm việc dành cho Quản trị viên/Giáo viên để thay đổi nội dung các Tab mà <strong>không cần chỉnh code</strong>.</p>
+
+        <!-- 1. QUẢN LÝ TAB 1 -->
+        <div class="admin-panel">
+            <h3>1. Cập Nhật Lý Thuyết (Tab 1)</h3>
+            <label>Chọn Bài Cần Sửa Lý Thuyết:</label>
+            <select id="admin-summary-lesson">
+                <option value="1">Bài 1: Tập hợp</option>
+                <option value="2">Bài 2: Cách ghi số tự nhiên</option>
+                <option value="3">Bài 3: Thứ tự trong tập hợp</option>
+                <option value="4">Bài 4: Phép cộng và phép trừ</option>
+                <option value="5">Bài 5: Phép nhân và phép chia</option>
+                <option value="6">Bài 6: Lũy thừa với số mũ tự nhiên</option>
+                <option value="7">Bài 7: Thứ tự thực hiện các phép tính</option>
+            </select>
+            <label>Dán nội dung văn bản lý thuyết vào đây:</label>
+            <textarea id="admin-summary-input" placeholder="Dán nội dung lý thuyết từ Word/PDF vào đây..."></textarea>
+            <button class="btn-action" onclick="saveAdminSummary()">💾 Lưu Lý Thuyết Tab 1</button>
+        </div>
+
+        <!-- 2. QUẢN LÝ TAB 2 -->
+        <div class="admin-panel">
+            <h3>2. Quản Lý Câu Hỏi Luyện Tập (Tab 2)</h3>
+            
+            <!-- Ý 1: Thêm câu hỏi -->
+            <div class="sub-panel">
+                <h4 style="color: var(--primary); margin-bottom: 0.8rem;">Ý 1: Thêm Câu Hỏi Mới Vào Bài Luyện Tập</h4>
+                <label>Chọn Bài Luyện Tập Cần Thêm:</label>
+                <select id="admin-quiz-lesson">
+                    <option value="1">Bài 1: Tập hợp</option>
+                    <option value="2">Bài 2: Cách ghi số tự nhiên</option>
+                    <option value="3">Bài 3: Thứ tự trong tập hợp</option>
+                    <option value="4">Bài 4: Phép cộng và phép trừ</option>
+                    <option value="5">Bài 5: Phép nhân và phép chia</option>
+                    <option value="6">Bài 6: Lũy thừa với số mũ tự nhiên</option>
+                    <option value="7">Bài 7: Thứ tự thực hiện các phép tính</option>
+                </select>
+                <label>Mức Độ Câu Hỏi:</label>
+                <select id="admin-quiz-level">
+                    <option value="biet">Nhận biết</option>
+                    <option value="hieu">Thông hiểu</option>
+                    <option value="vdt">Vận dụng thấp</option>
+                    <option value="vdc">Vận dụng cao</option>
+                </select>
+                <label>Nội dung câu hỏi:</label>
+                <input type="text" id="admin-quiz-text" placeholder="Nhập câu hỏi...">
+                <label>Các đáp án (Nhập 4 phương án):</label>
+                <input type="text" id="admin-quiz-opt0" placeholder="Đáp án A">
+                <input type="text" id="admin-quiz-opt1" placeholder="Đáp án B">
+                <input type="text" id="admin-quiz-opt2" placeholder="Đáp án C">
+                <input type="text" id="admin-quiz-opt3" placeholder="Đáp án D">
+                <label>Đáp án ĐÚNG:</label>
+                <select id="admin-quiz-correct">
+                    <option value="0">Đáp án A</option>
+                    <option value="1">Đáp án B</option>
+                    <option value="2">Đáp án C</option>
+                    <option value="3">Đáp án D</option>
+                </select>
+                <label>Lời giải thích chi tiết:</label>
+                <input type="text" id="admin-quiz-explain" placeholder="Giải thích vì sao đúng...">
+                <button class="btn-action" onclick="addAdminQuiz()">➕ Thêm Câu Hỏi Mới</button>
+            </div>
+
+            <!-- Ý 2: Chỉnh sửa nội dung -->
+            <div class="sub-panel">
+                <h4 style="color: var(--warning); margin-bottom: 0.8rem;">Ý 2: Chỉnh Sửa / Xóa Câu Hỏi Hiện Có</h4>
+                <label>Chọn Bài Luyện Tập:</label>
+                <select id="edit-quiz-lesson" onchange="populateQuizSelect()">
+                    <option value="1">Bài 1: Tập hợp</option>
+                    <option value="2">Bài 2: Cách ghi số tự nhiên</option>
+                    <option value="3">Bài 3: Thứ tự trong tập hợp</option>
+                    <option value="4">Bài 4: Phép cộng và phép trừ</option>
+                    <option value="5">Bài 5: Phép nhân và phép chia</option>
+                    <option value="6">Bài 6: Lũy thừa với số mũ tự nhiên</option>
+                    <option value="7">Bài 7: Thứ tự thực hiện các phép tính</option>
+                </select>
+                <label>Chọn Câu Hỏi Cần Sửa:</label>
+                <select id="edit-quiz-select" onchange="loadQuizToEdit()">
+                    <!-- Tải danh sách câu hỏi -->
+                </select>
+                <label>Mức Độ:</label>
+                <select id="edit-quiz-level">
+                    <option value="biet">Nhận biết</option>
+                    <option value="hieu">Thông hiểu</option>
+                    <option value="vdt">Vận dụng thấp</option>
+                    <option value="vdc">Vận dụng cao</option>
+                </select>
+                <label>Nội dung câu hỏi:</label>
+                <input type="text" id="edit-quiz-text">
+                <label>Các đáp án:</label>
+                <input type="text" id="edit-quiz-opt0">
+                <input type="text" id="edit-quiz-opt1">
+                <input type="text" id="edit-quiz-opt2">
+                <input type="text" id="edit-quiz-opt3">
+                <label>Đáp án ĐÚNG:</label>
+                <select id="edit-quiz-correct">
+                    <option value="0">Đáp án A</option>
+                    <option value="1">Đáp án B</option>
+                    <option value="2">Đáp án C</option>
+                    <option value="3">Đáp án D</option>
+                </select>
+                <label>Lời giải thích chi tiết:</label>
+                <input type="text" id="edit-quiz-explain">
+                <button class="btn-action btn-edit" onclick="updateAdminQuiz()">💾 Cập Nhật Câu Hỏi Này</button>
+                <button class="btn-action btn-reset" onclick="deleteAdminQuiz()">🗑️ Xóa Câu Hỏi Này</button>
+            </div>
+        </div>
+
+        <!-- 3. QUẢN LÝ TAB 3 -->
+        <div class="admin-panel">
+            <h3>3. Quản Lý Đề Kiểm Tra Tổng Hợp (Tab 3)</h3>
+
+            <!-- Ý 1: Thêm câu hỏi kiểm tra -->
+            <div class="sub-panel">
+                <h4 style="color: var(--primary); margin-bottom: 0.8rem;">Ý 1: Thêm Câu Hỏi Mới Vào Đề Kiểm Tra</h4>
+                <label>Mức Độ Câu Hỏi:</label>
+                <select id="admin-exam-level">
+                    <option value="biet">Nhận biết</option>
+                    <option value="hieu">Thông hiểu</option>
+                    <option value="vdt">Vận dụng thấp</option>
+                    <option value="vdc">Vận dụng cao</option>
+                </select>
+                <label>Nội dung câu hỏi kiểm tra:</label>
+                <input type="text" id="admin-exam-text" placeholder="Nhập câu hỏi kiểm tra...">
+                <label>Các đáp án:</label>
+                <input type="text" id="admin-exam-opt0" placeholder="Đáp án A">
+                <input type="text" id="admin-exam-opt1" placeholder="Đáp án B">
+                <input type="text" id="admin-exam-opt2" placeholder="Đáp án C">
+                <input type="text" id="admin-exam-opt3" placeholder="Đáp án D">
+                <label>Đáp án ĐÚNG:</label>
+                <select id="admin-exam-correct">
+                    <option value="0">Đáp án A</option>
+                    <option value="1">Đáp án B</option>
+                    <option value="2">Đáp án C</option>
+                    <option value="3">Đáp án D</option>
+                </select>
+                <label>Lời giải thích chi tiết:</label>
+                <input type="text" id="admin-exam-explain" placeholder="Giải thích đáp án đúng...">
+                <button class="btn-action" onclick="addAdminExam()">➕ Thêm Câu Hỏi Kiểm Tra Mới</button>
+            </div>
+
+            <!-- Ý 2: Chỉnh sửa nội dung kiểm tra -->
+            <div class="sub-panel">
+                <h4 style="color: var(--warning); margin-bottom: 0.8rem;">Ý 2: Chỉnh Sửa / Xóa Câu Hỏi Kiểm Tra Hiện Có</h4>
+                <label>Chọn Câu Hỏi Cần Sửa:</label>
+                <select id="edit-exam-select" onchange="loadExamToEdit()">
+                    <!-- Tải danh sách câu hỏi kiểm tra -->
+                </select>
+                <label>Mức Độ:</label>
+                <select id="edit-exam-level">
+                    <option value="biet">Nhận biết</option>
+                    <option value="hieu">Thông hiểu</option>
+                    <option value="vdt">Vận dụng thấp</option>
+                    <option value="vdc">Vận dụng cao</option>
+                </select>
+                <label>Nội dung câu hỏi:</label>
+                <input type="text" id="edit-exam-text">
+                <label>Các đáp án:</label>
+                <input type="text" id="edit-exam-opt0">
+                <input type="text" id="edit-exam-opt1">
+                <input type="text" id="edit-exam-opt2">
+                <input type="text" id="edit-exam-opt3">
+                <label>Đáp án ĐÚNG:</label>
+                <select id="edit-exam-correct">
+                    <option value="0">Đáp án A</option>
+                    <option value="1">Đáp án B</option>
+                    <option value="2">Đáp án C</option>
+                    <option value="3">Đáp án D</option>
+                </select>
+                <label>Lời giải thích chi tiết:</label>
+                <input type="text" id="edit-exam-explain">
+                <button class="btn-action btn-edit" onclick="updateAdminExam()">💾 Cập Nhật Câu Hỏi Này</button>
+                <button class="btn-action btn-reset" onclick="deleteAdminExam()">🗑️ Xóa Câu Hỏi Này</button>
+            </div>
+        </div>
+
+        <!-- KHÔI PHỤC -->
+        <div class="admin-panel" style="border-left-color: var(--danger);">
+            <h3>4. Đặt Lại Dữ Liệu Gốc</h3>
+            <p style="margin-bottom: 0.5rem;">Khôi phục lại toàn bộ nội dung lý thuyết và câu hỏi ban đầu:</p>
+            <button class="btn-action btn-reset" onclick="resetAllData()">🔄 Khôi Phục Dữ Liệu Gốc Mặc Định</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+// --- CẤU HÌNH 2 MẬT KHẨU KHÁC NHAU ---
+const PASS_TAB4_ADMIN = "123456"; // Mật khẩu 1: Vào Tab 4 (Quản trị nội dung)
+const PASS_TAB3_TOGGLE = "654321"; // Mật khẩu 2: Bật/Tắt đề kiểm tra ở Tab 3
+
+let isAdminAuthenticated = false;
+
+// --- CHUYỂN TAB ---
+function switchTab(index) {
+    // Nếu chuyển sang bất kỳ Tab nào khác Tab Quản trị (Tab 4) -> Tự động HỦY QUYỀN
+    if (index !== 4) {
+        isAdminAuthenticated = false;
+    }
+
+    // Nếu chọn vào Tab 4 và chưa đăng nhập
+    if (index === 4 && !isAdminAuthenticated) {
+        const pass = prompt("🔐 Nhập mật khẩu QUẢN TRỊ để tiếp tục:");
+        if (pass === PASS_TAB4_ADMIN) {
+            isAdminAuthenticated = true;
+            alert("Đăng nhập Quản trị thành công!");
+        } else {
+            if (pass !== null) alert("❌ Mật khẩu Quản trị không chính xác!");
+            return; // Dừng lại, không cho chuyển Tab
+        }
+    }
+
+    const tabs = document.querySelectorAll('.tab-btn');
+    const contents = document.querySelectorAll('.tab-content');
+    tabs.forEach((tab, i) => {
+        tab.classList.toggle('active', i === index);
+        contents[i].classList.toggle('active', i === index);
+    });
+}
+
+// --- BẢO VỆ CÔNG TẮC BẬT/TẮT TAB 3 ---
+function toggleExamVisibility(event) {
+    const pass = prompt("🔐 Nhập mật khẩu BẬT/TẮT ĐỀ (Tab 3) để thực hiện:");
+    if (pass === PASS_TAB3_TOGGLE) {
+        const isChecked = document.getElementById('admin-toggle').checked;
+        document.getElementById('exam-wrapper').style.display = isChecked ? 'block' : 'none';
+        document.getElementById('exam-hidden-msg').style.display = isChecked ? 'none' : 'block';
+    } else {
+        if (pass !== null) alert("❌ Mật khẩu Bật/Tắt đề không chính xác!");
+        event.preventDefault(); // Ngăn ô checkbox thay đổi trạng thái nếu sai mật khẩu
+    }
+}
+
+// --- DỮ LIỆU GỐC MẶC ĐỊNH TAB 1 ---
+const defaultSummaries = {
+    1: `Bài 1: Tập hợp. Phần tử của tập hợp
+- Tập hợp gồm các đối tượng gọi là phần tử.
+- Kí hiệu: Chữ cái in hoa A, B, C...
+- a ∈ A (a thuộc A), b ∉ A (b không thuộc A).
+- Cách cho tập hợp:
+  1. Liệt kê các phần tử
+  2. Nêu dấu hiệu đặc trưng.`,
+    2: `Bài 2: Cách ghi số tự nhiên
+- Tập số tự nhiên: N = {0; 1; 2; 3; ...}
+- Tập số tự nhiên khác 0: N* = {1; 2; 3; ...}
+- Hệ thập phân gồm 10 chữ số: 0, 1, 2, 3, 4, 5, 6, 7, 8, 9.
+- Số La Mã: I=1, V=5, X=10, IV=4, IX=9.`,
+    3: `Bài 3: Thứ tự trong tập hợp các số tự nhiên
+- Trên tia số nằm ngang, điểm biểu diễn số nhỏ hơn nằm bên trái.
+- Nếu a < b và b < c thì a < c (tính chất bắc cầu).
+- Hai số tự nhiên liên tiếp hơn kém nhau 1 đơn vị.`,
+    4: `Bài 4: Phép cộng và phép trừ số tự nhiên
+- Phép cộng: a + b = c (Số hạng + Số hạng = Tổng).
+- Tính chất: Giao hoán (a+b=b+a), Kết hợp ((a+b)+c = a+(b+c)).
+- Phép trừ: a - b = c (a ≥ b).`,
+    5: `Bài 5: Phép nhân và phép chia số tự nhiên
+- Tính chất phép nhân: Giao hoán, Kết hợp, Phân phối đối với phép cộng: a(b+c) = ab + ac.
+- Phép chia hết: a = b . q.
+- Phép chia có dư: a = b . q + r (0 < r < b).`,
+    6: `Bài 6: Lũy thừa với số mũ tự nhiên
+- aⁿ = a . a ... a (n thừa số a). a gọi là cơ số, n gọi là số mũ.
+- Nhân hai lũy thừa cùng cơ số: aᵐ . aⁿ = aᵐ⁺ⁿ.
+- Chia hai lũy thừa cùng cơ số: aᵐ : aⁿ = aᵐ⁻ⁿ (a ≠ 0, m ≥ n). Quy ước: a⁰ = 1.`,
+    7: `Bài 7: Thứ tự thực hiện các phép tính
+- Biểu thức không có dấu ngoặc: Lũy thừa -> Nhân và Chia -> Cộng và Trừ.
+- Biểu thức có dấu ngoặc: Ngoặc tròn ( ) -> Ngoặc vuông [ ] -> Ngoặc nhọn { }.`
+};
+
+// --- DỮ LIỆU GỐC MẶC ĐỊNH TAB 2 ---
+const defaultQuizzes = {
+    1: [
+        { level: "biet", text: "1. Cho A = {2; 4; 6}. Khẳng định nào ĐÚNG?", options: ["A. 2 ∉ A", "B. 4 ∈ A", "C. 5 ∈ A", "D. 6 ∉ A"], correct: 1, explain: "4 thuộc tập A." },
+        { level: "biet", text: "2. Kí hiệu 'không thuộc' là:", options: ["A. ∈", "B. ∉", "C. ⊂", "D. ="], correct: 1, explain: "Kí hiệu ∉ nghĩa là không thuộc." },
+        { level: "biet", text: "3. Tập hợp các chữ số của số 1123 là:", options: ["A. {1; 1; 2; 3}", "B. {1; 2; 3}", "C. {1; 2}", "D. {1; 3}"], correct: 1, explain: "Mỗi phần tử chỉ viết 1 lần." },
+        { level: "biet", text: "4. Cách viết tập hợp đúng:", options: ["A. M = (1; 2)", "B. M = [1; 2]", "C. M = {1; 2}", "D. M = <1; 2>"], correct: 2, explain: "Tập hợp dùng ngoặc nhọn." },
+        { level: "hieu", text: "5. Viết B = {x ∈ N | 2 < x < 6} dạng liệt kê:", options: ["A. {2; 3; 4; 5; 6}", "B. {3; 4; 5}", "C. {3; 4; 5; 6}", "D. {2; 3; 4; 5}"], correct: 1, explain: "Lấy các số lớn hơn 2 và nhỏ hơn 6." },
+        { level: "hieu", text: "6. Số phần tử của C = {10; 11; ...; 20} là:", options: ["A. 10", "B. 11", "C. 20", "D. 12"], correct: 1, explain: "(20 - 10) + 1 = 11 phần tử." },
+        { level: "hieu", text: "7. Tập D = {x ∈ N* | x < 4} gồm:", options: ["A. {0; 1; 2; 3}", "B. {1; 2; 3}", "C. {1; 2; 3; 4}", "D. {0; 1; 2; 3; 4}"], correct: 1, explain: "N* không chứa số 0." },
+        { level: "vdt", text: "8. Số tập con của A = {1; 2} là:", options: ["A. 2", "B. 3", "C. 4", "D. 1"], correct: 2, explain: "Gồm: ∅, {1}, {2}, {1;2}." },
+        { level: "vdt", text: "9. Viết tập hợp các số tự nhiên lẻ có 2 chữ số nhỏ hơn 15:", options: ["A. {11; 13}", "B. {10; 12; 14}", "C. {11; 13; 15}", "D. {1; 3; 5}"], correct: 0, explain: "Số lẻ có 2 chữ số nhỏ hơn 15 là 11 và 13." },
+        { level: "vdc", text: "10. Cho E = {1; 2; 3; 4; 5}. Có bao nhiêu tập con chứa đúng 2 phần tử?", options: ["A. 5", "B. 10", "C. 15", "D. 20"], correct: 1, explain: "Các cặp ghép lại được đúng 10 tập con." }
+    ],
+    2: [
+        { level: "biet", text: "1. Số tự nhiên nhỏ nhất là:", options: ["A. 0", "B. 1", "C. 10", "D. Không có"], correct: 0, explain: "0 là số tự nhiên nhỏ nhất." },
+        { level: "biet", text: "2. Chữ số La Mã XIV biểu diễn số:", options: ["A. 16", "B. 14", "C. 24", "D. 15"], correct: 1, explain: "X=10, IV=4 -> XIV = 14." },
+        { level: "biet", text: "3. Trong số 345, chữ số 4 ở hàng nào?", options: ["A. Đơn vị", "B. Chục", "C. Trăm", "D. Nghìn"], correct: 1, explain: "Đứng thứ 2 từ phải sang là hàng chục." },
+        { level: "biet", text: "4. Kí hiệu tập hợp số tự nhiên là:", options: ["A. N", "B. Z", "C. Q", "D. R"], correct: 0, explain: "Tập hợp số tự nhiên là N." },
+        { level: "hieu", text: "5. Giá trị của số La Mã XXIX là:", options: ["A. 29", "B. 31", "C. 24", "D. 19"], correct: 0, explain: "XX=20, IX=9 -> XXIX = 29." },
+        { level: "hieu", text: "6. Biểu diễn số 1234 thành tổng giá trị các chữ số:", options: ["A. 1000 + 200 + 30 + 4", "B. 100 + 20 + 3 + 4", "C. 1 + 2 + 3 + 4", "D. 1200 + 34"], correct: 0, explain: "Đúng theo cấu tạo số thập phân." },
+        { level: "hieu", text: "7. Số tự nhiên liền sau số 999 là:", options: ["A. 998", "B. 1000", "C. 1001", "D. 990"], correct: 1, explain: "999 + 1 = 1000." },
+        { level: "vdt", text: "8. Cần bao nhiêu chữ số để viết các số tự nhiên từ 1 đến 15?", options: ["A. 15", "B. 21", "C. 20", "D. 18"], correct: 1, explain: "9 số có 1 chữ số (9) + 6 số có 2 chữ số (12) = 21." },
+        { level: "vdt", text: "9. Viết số 28 sang số La Mã:", options: ["A. XXVIII", "B. XXVI", "C. XXXVIII", "D. XXIX"], correct: 0, explain: "XX=20, VIII=8." },
+        { level: "vdc", text: "10. Cho số 56a8. Tìm 'a' để tổng các chữ số bằng 21:", options: ["A. 1", "B. 2", "C. 3", "D. 4"], correct: 1, explain: "5 + 6 + a + 8 = 19 + a = 21 -> a = 2." }
+    ],
+    3: [
+        { level: "biet", text: "1. Số liền trước số 100 là:", options: ["A. 101", "B. 99", "C. 98", "D. 90"], correct: 1, explain: "100 - 1 = 99." },
+        { level: "biet", text: "2. Điểm a nằm bên trái điểm b trên tia số nằm ngang nghĩa là:", options: ["A. a > b", "B. a < b", "C. a = b", "D. a ≥ b"], correct: 1, explain: "Nằm bên trái nhỏ hơn." },
+        { level: "biet", text: "3. Hai số tự nhiên liên tiếp hơn kém nhau:", options: ["A. 1 đơn vị", "B. 2 đơn vị", "C. 10 đơn vị", "D. 0 đơn vị"], correct: 0, explain: "Hơn kém nhau 1 đơn vị." },
+        { level: "biet", text: "4. Sắp xếp 5, 2, 8 theo thứ tự tăng dần:", options: ["A. 8, 5, 2", "B. 2, 5, 8", "C. 5, 2, 8", "D. 2, 8, 5"], correct: 1, explain: "Tăng dần: nhỏ đến lớn." },
+        { level: "hieu", text: "5. Cho a < b và b < 10. So sánh a và 10:", options: ["A. a > 10", "B. a = 10", "C. a < 10", "D. Không so sánh được"], correct: 2, explain: "Tính chất bắc cầu." },
+        { level: "hieu", text: "6. Số tự nhiên nằm giữa 14 và 16 là:", options: ["A. 13", "B. 15", "C. 17", "D. 18"], correct: 1, explain: "Số 15 ở giữa 14 và 16." },
+        { level: "hieu", text: "7. Tìm x biết x ∈ N và 12 < x ≤ 14:", options: ["A. {13}", "B. {13; 14}", "C. {12; 13; 14}", "D. {14}"], correct: 1, explain: "Lớn hơn 12 và nhỏ hơn hoặc bằng 14." },
+        { level: "vdt", text: "8. Ba số tự nhiên lẻ liên tiếp tăng dần bắt đầu từ 11 là:", options: ["A. 11; 12; 13", "B. 11; 13; 15", "C. 11; 14; 17", "D. 11; 13; 14"], correct: 1, explain: "Số lẻ liên tiếp cách nhau 2 đơn vị." },
+        { level: "vdt", text: "9. Tìm x nhỏ nhất sao cho x > 45 và x chia hết cho 5:", options: ["A. 46", "B. 50", "C. 55", "D. 45"], correct: 1, explain: "50 lớn hơn 45 và chia hết cho 5." },
+        { level: "vdc", text: "10. Có bao nhiêu số tự nhiên x thỏa mãn 10 ≤ x < 100?", options: ["A. 90", "B. 89", "C. 91", "D. 100"], correct: 0, explain: "(99 - 10) + 1 = 90 số." }
+    ],
+    4: [
+        { level: "biet", text: "1. Kết quả phép tính 15 + 0 là:", options: ["A. 0", "B. 15", "C. 150", "D. 1"], correct: 1, explain: "Cộng với 0 bằng chính nó." },
+        { level: "biet", text: "2. Phép tính a + b = b + a thể hiện tính chất:", options: ["A. Giao hoán", "B. Kết hợp", "C. Phân phối", "D. Nhân với 1"], correct: 0, explain: "Đổi chỗ số hạng là tính giao hoán." },
+        { level: "biet", text: "3. Trong phép trừ a - b = c, 'a' gọi là:", options: ["A. Số trừ", "B. Số bị trừ", "C. Hiệu", "D. Tổng"], correct: 1, explain: "a đứng trước dấu trừ là số bị trừ." },
+        { level: "biet", text: "4. Điều kiện để có phép trừ a - b trong tập N là:", options: ["A. a > b", "B. a ≥ b", "C. a < b", "D. a ≤ b"], correct: 1, explain: "Số bị trừ phải lớn hơn hoặc bằng số trừ." },
+        { level: "hieu", text: "5. Tính nhẩm nhanh 25 + 37 + 75:", options: ["A. 137", "B. 127", "C. 147", "D. 100"], correct: 0, explain: "(25 + 75) + 37 = 100 + 37 = 137." },
+        { level: "hieu", text: "6. Tìm x biết x - 12 = 20:", options: ["A. 8", "B. 32", "C. 240", "D. 12"], correct: 1, explain: "x = 20 + 12 = 32." },
+        { level: "hieu", text: "7. Tìm x biết 50 - x = 20:", options: ["A. 30", "B. 70", "C. 25", "D. 1000"], correct: 0, explain: "x = 50 - 20 = 30." },
+        { level: "vdt", text: "8. Một cửa hàng buổi sáng bán 120kg gạo, buổi chiều bán ít hơn buổi sáng 30kg. Cả ngày bán được:", options: ["A. 210kg", "B. 150kg", "C. 90kg", "D. 240kg"], correct: 0, explain: "Chiều bán 90kg -> Cả ngày: 120 + 90 = 210kg." },
+        { level: "vdt", text: "9. Tính tổng 1 + 2 + 3 + ... + 9 + 10:", options: ["A. 50", "B. 55", "C. 60", "D. 45"], correct: 1, explain: "(1+10) x 10 : 2 = 55." },
+        { level: "vdc", text: "10. Hiệu hai số là 45. Nếu tăng số bị trừ 10 và giảm số trừ 5 thì hiệu mới là:", options: ["A. 60", "B. 50", "C. 30", "D. 40"], correct: 0, explain: "Hiệu mới = 45 + 10 + 5 = 60." }
+    ],
+    5: [
+        { level: "biet", text: "1. Kết quả phép tính 25 . 0 là:", options: ["A. 25", "B. 0", "C. 1", "D. 250"], correct: 1, explain: "Bất kỳ số nào nhân 0 cũng bằng 0." },
+        { level: "biet", text: "2. Phép chia a : b = q dư r có điều kiện số dư r là:", options: ["A. r > b", "B. 0 ≤ r < b", "C. r = b", "D. r > 0"], correct: 1, explain: "Số dư phải nhỏ hơn số chia." },
+        { level: "biet", text: "3. Tích a . 1 bằng:", options: ["A. 1", "B. a", "C. 0", "D. a+1"], correct: 1, explain: "Số nào nhân 1 cũng bằng chính nó." },
+        { level: "biet", text: "4. Công thức phân phối: a.(b + c) = ?", options: ["A. ab + c", "B. ab + ac", "C. a + bc", "D. abc"], correct: 1, explain: "a nhân với từng số hạng." },
+        { level: "hieu", text: "5. Tính hợp lý 4 . 37 . 25:", options: ["A. 3700", "B. 370", "C. 37000", "D. 37"], correct: 0, explain: "(4 . 25) . 37 = 100 . 37 = 3700." },
+        { level: "hieu", text: "6. Tìm x biết x : 5 = 12:", options: ["A. 60", "B. 17", "C. 7", "D. 2.4"], correct: 0, explain: "x = 12 . 5 = 60." },
+        { level: "hieu", text: "7. Phép chia 17 : 3 có thương và số dư lần lượt là:", options: ["A. Thương 5, dư 2", "B. Thương 5, dư 1", "C. Thương 6, dư 1", "D. Thương 4, dư 5"], correct: 0, explain: "17 = 3 . 5 + 2." },
+        { level: "vdt", text: "8. Cần ít nhất bao nhiêu xe 45 chỗ để chở 200 học sinh?", options: ["A. 4 xe", "B. 5 xe", "C. 6 xe", "D. 3 xe"], correct: 1, explain: "200 : 45 = 4 dư 20, vậy cần 5 xe." },
+        { level: "vdt", text: "9. Tính giá trị A = 36 . 45 + 36 . 55:", options: ["A. 3600", "B. 360", "C. 36000", "D. 100"], correct: 0, explain: "36 . (45 + 55) = 36 . 100 = 3600." },
+        { level: "vdc", text: "10. Tìm số tự nhiên x biết (x - 3) . 15 = 0:", options: ["A. x = 0", "B. x = 3", "C. x = 15", "D. x = 18"], correct: 1, explain: "x - 3 = 0 -> x = 3." }
+    ],
+    6: [
+        { level: "biet", text: "1. Trong lũy thừa 2⁵, cơ số là:", options: ["A. 5", "B. 2", "C. 10", "D. 32"], correct: 1, explain: "2 là cơ số, 5 là số mũ." },
+        { level: "biet", text: "2. Tích 3 . 3 . 3 . 3 được viết dưới dạng lũy thừa là:", options: ["A. 3⁴", "B. 4³", "C. 3x4", "D. 12"], correct: 0, explain: "Có 4 thừa số 3." },
+        { level: "biet", text: "3. Quy ước a⁰ (với a ≠ 0) bằng:", options: ["A. 0", "B. 1", "C. a", "D. Không có"], correct: 1, explain: "a⁰ = 1." },
+        { level: "biet", text: "4. Công thức nhân hai lũy thừa cùng cơ số: aᵐ . aⁿ = ?", options: ["A. aᵐ⁺ⁿ", "B. aᵐ⁻ⁿ", "C. aᵐⁿ", "D. (a.a)ᵐ⁺ⁿ"], correct: 0, explain: "Giữ nguyên cơ số, cộng số mũ." },
+        { level: "hieu", text: "5. Kết quả của 2³ . 2² là:", options: ["A. 2⁶", "B. 2⁵", "C. 4⁵", "D. 2¹"], correct: 1, explain: "2³⁺² = 2⁵." },
+        { level: "hieu", text: "6. Giá trị của lũy thừa 5³ là:", options: ["A. 15", "B. 125", "C. 25", "D. 8"], correct: 1, explain: "5 . 5 . 5 = 125." },
+        { level: "hieu", text: "7. Kết quả của 7⁵ : 7³ là:", options: ["A. 7²", "B. 7⁸", "C. 7¹⁵", "D. 1²"], correct: 0, explain: "7⁵⁻³ = 7²." },
+        { level: "vdt", text: "8. So sánh 2³ và 3²:", options: ["A. 2³ > 3²", "B. 2³ < 3²", "C. 2³ = 3²", "D. Không so sánh được"], correct: 1, explain: "2³ = 8, 3² = 9 -> 8 < 9." },
+        { level: "vdt", text: "9. Tìm x biết 2ˣ = 16:", options: ["A. 2", "B. 3", "C. 4", "D. 8"], correct: 2, explain: "2⁴ = 16 -> x = 4." },
+        { level: "vdc", text: "10. Viết tích 8 . 16 dưới dạng một lũy thừa cơ số 2:", options: ["A. 2⁷", "B. 2¹²", "C. 2⁸", "D. 2⁶"], correct: 0, explain: "2³ . 2⁴ = 2⁷." }
+    ],
+    7: [
+        { level: "biet", text: "1. Thứ tự thực hiện phép tính không có dấu ngoặc là:", options: ["A. Cộng trừ -> Nhân chia -> Lũy thừa", "B. Lũy thừa -> Nhân chia -> Cộng trừ", "C. Nhân chia -> Cộng trừ -> Lũy thừa", "D. Từ phải sang trái"], correct: 1, explain: "Đúng quy tắc ưu tiên." },
+        { level: "biet", text: "2. Thứ tự thực hiện các dấu ngoặc là:", options: ["A. { } -> [ ] -> ( )", "B. ( ) -> [ ] -> { }", "C. [ ] -> ( ) -> { }", "D. Tùy ý"], correct: 1, explain: "Ngoặc tròn trước, đến vuông, rồi nhọn." },
+        { level: "biet", text: "3. Kết quả phép tính 10 - 2 . 3 là:", options: ["A. 24", "B. 4", "C. 16", "D. 8"], correct: 1, explain: "Nhân trước: 10 - 6 = 4." },
+        { level: "biet", text: "4. Với biểu thức chỉ có phép cộng và trừ, ta thực hiện:", options: ["A. Từ trái sang phải", "B. Từ phải sang trái", "C. Phép cộng trước", "D. Phép trừ trước"], correct: 0, explain: "Thực hiện lần lượt từ trái sang phải." },
+        { level: "hieu", text: "5. Giá trị của biểu thức 20 - 2 . 3² là:", options: ["A. 162", "B. 2", "C. 18", "D. 144"], correct: 1, explain: "Lũy thừa -> Nhân -> Trừ: 20 - 2.9 = 20 - 18 = 2." },
+        { level: "hieu", text: "6. Giá trị biểu thức 100 : (20 . 5) là:", options: ["A. 25", "B. 1", "C. 100", "D. 5"], correct: 1, explain: "Trong ngoặc trước: 100 : 100 = 1." },
+        { level: "hieu", text: "7. Tìm x biết 2x + 5 = 15:", options: ["A. 10", "B. 5", "C. 20", "D. 2.5"], correct: 1, explain: "2x = 10 -> x = 5." },
+        { level: "vdt", text: "8. Tính A = 50 - [30 - (8 - 2)² / 4]:", options: ["A. 29", "B. 21", "C. 41", "D. 35"], correct: 0, explain: "(8-2)²=36; 36/4=9; 30-9=21; 50-21=29." },
+        { level: "vdt", text: "9. Tìm x biết 123 - 5.(x + 4) = 38:", options: ["A. 13", "B. 17", "C. 85", "D. 9"], correct: 0, explain: "5(x+4)=85 -> x+4=17 -> x=13." },
+        { level: "vdc", text: "10. Cho A = 1 + 2 + 2² + ... + 2²⁰. So sánh A với 2²¹:", options: ["A. A = 2²¹", "B. A = 2²¹ - 1", "C. A > 2²¹", "D. A = 2²¹ + 1"], correct: 1, explain: "2A - A = 2²¹ - 1." }
+    ]
+};
+
+// --- DỮ LIỆU GỐC MẶC ĐỊNH TAB 3 (10 CÂU KIỂM TRA TỔNG HỢP) ---
+const defaultExam = [
+    { level: "biet", text: "1. Cho tập hợp A = {x ∈ N | x ≤ 3}. Tập A được viết liệt kê là:", options: ["A. {1; 2; 3}", "B. {0; 1; 2; 3}", "C. {0; 1; 2}", "D. {1; 2}"], correct: 1, explain: "N chứa 0 và lấy cả dấu '=' nên chọn 0, 1, 2, 3." },
+    { level: "biet", text: "2. Chữ số 5 trong số 152 300 có giá trị là:", options: ["A. 500", "B. 5 000", "C. 50 000", "D. 50"], correct: 2, explain: "Chữ số 5 ở hàng chục nghìn nên có giá trị 50 000." },
+    { level: "biet", text: "3. Khẳng định nào sau đây là ĐÚNG?", options: ["A. 2³ = 6", "B. 3² = 6", "C. 5⁰ = 1", "D. 2⁴ = 8"], correct: 2, explain: "Theo quy ước, bất kỳ số khác 0 lũy thừa 0 đều bằng 1." },
+    { level: "biet", text: "4. Kết quả của phép tính 2⁵ . 2³ là:", options: ["A. 2¹⁵", "B. 2⁸", "C. 4⁸", "D. 4¹⁵"], correct: 1, explain: "Cộng hai số mũ: 5 + 3 = 8 -> 2⁸." },
+    { level: "hieu", text: "5. Kết quả phép tính 18 - 12 : 3 là:", options: ["A. 2", "B. 14", "C. 4", "D. 10"], correct: 1, explain: "Thực hiện chia trước, trừ sau: 18 - 4 = 14." },
+    { level: "hieu", text: "6. Tìm x biết: 2x - 3 = 7:", options: ["A. x = 2", "B. x = 5", "C. x = 10", "D. x = 8"], correct: 1, explain: "2x = 7 + 3 = 10 -> x = 5." },
+    { level: "hieu", text: "7. Viết số 24 dưới dạng số La Mã:", options: ["A. XXIV", "B. XXIIII", "C. XXVI", "D. XIV"], correct: 0, explain: "XX = 20, IV = 4 -> XXIV." },
+    { level: "vdt", text: "8. Tính giá trị biểu thức B = 25 . 7 . 4 - 50 . 2 . 6:", options: ["A. 100", "B. 700", "C. 600", "D. 0"], correct: 0, explain: "(25.4).7 - (50.2).6 = 100.7 - 100.6 = 700 - 600 = 100." },
+    { level: "vdt", text: "9. Một đoàn khách gồm 52 người muốn đi đò sang sông. Mỗi chuyến đò chở tối đa 6 người (kể cả người lái đò). Cần ít nhất bao nhiêu chuyến đò để chở hết khách?", options: ["A. 9 chuyến", "B. 10 chuyến", "C. 11 chuyến", "D. 12 chuyến"], correct: 2, explain: "Mỗi chuyến chở tối đa 5 khách. 52 : 5 = 10 dư 2 -> Cần 11 chuyến." },
+    { level: "vdc", text: "10. Tìm số tự nhiên x biết: 3ˣ⁺¹ + 3ˣ = 36:", options: ["A. x = 1", "B. x = 2", "C. x = 3", "D. x = 0"], correct: 1, explain: "3ˣ.(3 + 1) = 36 -> 3ˣ . 4 = 36 -> 3ˣ = 9 = 3² -> x = 2." }
+];
+
+// --- DỮ LIỆU ĐẦY ĐỦ GIẢI CHI TIẾT SGK TOÁN 6 CHƯƠNG 1 (KNTT) ---
+const sgkSolutions = {
+    1: ` BÀI 1: TẬP HỢP. PHẦN TỬ CỦA TẬP HỢP (SGK Trang 6 - 7)
+
+Bài 1.1:
+Cho hai tập hợp A = {a; b; c; x; y} và B = {b; d; y; z}.
+Dùng kí hiệu ∈ hoặc ∉ để điền vào chỗ chấm:
+a) a ... A;        b) a ... B;        c) b ... A;        d) x ... B.
+Lời giải:
+a) a ∈ A;
+b) a ∉ B;
+c) b ∈ A;
+d) x ∉ B.
+
+Bài 1.2:
+Cho tập hợp U = {x ∈ N | x chia hết cho 3}.
+Trong các số 3; 5; 6; 0; 7, số nào thuộc, số nào không thuộc tập U?
+Lời giải:
+- Các số chia hết cho 3 là: 0; 3; 6 -> Thuộc tập U.
+- Các số không chia hết cho 3 là: 5; 7 -> Không thuộc tập U.
+Kí hiệu: 3 ∈ U; 5 ∉ U; 6 ∈ U; 0 ∈ U; 7 ∉ U.
+
+Bài 1.3:
+Bằng cách liệt kê các phần tử, hãy viết các tập hợp sau:
+a) Tập hợp K các số tự nhiên nhỏ hơn 7;
+b) Tập hợp D các tháng (dương lịch) có 30 ngày;
+c) Tập hợp M các chữ số trong số 2021.
+Lời giải:
+a) K = {0; 1; 2; 3; 4; 5; 6}.
+b) D = {Tháng 4; Tháng 6; Tháng 9; Tháng 11}.
+c) M = {2; 0; 1}. (Lưu ý: Chữ số 2 xuất hiện 2 lần nhưng chỉ ghi 1 lần).
+
+Bài 1.4:
+Bằng cách nêu dấu hiệu đặc trưng, hãy viết tập hợp A các số tự nhiên nhỏ hơn 10.
+Lời giải:
+A = {x ∈ N | x < 10}.
+
+Bài 1.5:
+Cho tập hợp A = {x ∈ N | 9 < x < 16}.
+a) Viết tập hợp A bằng cách liệt kê các phần tử.
+b) Điền kí hiệu thích hợp (∈, ∉) vào ô trống:
+12 ... A;      16 ... A;      10 ... A;      20 ... A.
+Lời giải:
+a) A = {10; 11; 12; 13; 14; 15}.
+b) 12 ∈ A;    16 ∉ A;    10 ∈ A;    20 ∉ A.`,
+
+    2: ` BÀI 2: CÁCH GHI SỐ TỰ NHIÊN (SGK Trang 9 - 12)
+
+Bài 1.6:
+Cho các số: 2 750; 100 294; 3 412 000.
+a) Đọc mỗi số đã cho.
+b) Chữ số 4 trong mỗi số đã cho có giá trị bằng bao nhiêu?
+Lời giải:
+a) 
+- 2 750: Hai nghìn bảy trăm năm mươi.
+- 100 294: Một trăm nghìn hai trăm chín mươi tư.
+- 3 412 000: Ba triệu bốn trăm mười hai nghìn.
+b) Giá trị chữ số 4:
+- Trong số 2 750: Không có chữ số 4.
+- Trong số 100 294: Chữ số 4 ở hàng đơn vị, giá trị bằng 4.
+- Trong số 3 412 000: Chữ số 4 ở hàng trăm nghìn, giá trị bằng 400 000.
+
+Bài 1.7:
+Viết số tự nhiên biết số đó gồm:
+a) 3 trăm, 0 chục, 4 đơn vị;
+b) 5 nghìn, 4 trăm, 3 chục, 2 đơn vị;
+c) 7 triệu, 1 trăm nghìn, 0 chục nghìn, 5 nghìn, 2 trăm, 0 chục, 9 đơn vị.
+Lời giải:
+a) 304.
+b) 5 432.
+c) 7 105 209.
+
+Bài 1.8:
+Viết tập hợp các chữ số của số 10 000 000.
+Lời giải:
+Số 10 000 000 gồm các chữ số 1 và 0.
+Vậy tập hợp các chữ số là: {1; 0}.
+
+Bài 1.9:
+Đọc các số La Mã sau: XIV; XVI; XXIII; XXVIII.
+Lời giải:
+- XIV: Mười bốn (14).
+- XVI: Mười sáu (16).
+- XXIII: Hai mươi ba (23).
+- XXVIII: Hai mươi tám (28).
+
+Bài 1.10:
+Viết các số sau sang số La Mã: 12; 19; 26.
+Lời giải:
+- 12 = 10 + 2 -> XII.
+- 19 = 10 + 9 -> XIX.
+- 26 = 20 + 6 -> XXVI.
+
+Bài 1.11:
+Dùng các chữ số 0, 3, 5, hãy viết tất cả các số tự nhiên có 3 chữ số khác nhau.
+Lời giải:
+Chữ số hàng trăm phải khác 0 -> Chữ số hàng trăm có thể là 3 hoặc 5.
+Các số lập được là: 305; 350; 503; 530.
+
+Bài 1.12:
+Biểu diễn số 2 021 thành tổng giá trị các chữ số của nó.
+Lời giải:
+2 021 = 2 . 1000 + 0 . 100 + 2 . 10 + 1 = 2000 + 20 + 1.`,
+
+    3: ` BÀI 3: THỨ TỰ TRONG TẬP HỢP CÁC SỐ TỰ NHIÊN (SGK Trang 13 - 14)
+
+Bài 1.13:
+Viết thêm hai số hạng của mỗi dãy số sau:
+a) 3; 6; 9; 12; ...
+b) 1; 4; 9; 16; 25; ...
+Lời giải:
+a) Dãy số tăng dần 3 đơn vị -> Hai số tiếp theo: 15; 18.
+b) Dãy gồm các bình phương 1², 2², 3², 4², 5² -> Hai số tiếp theo là 6² = 36 và 7² = 49.
+
+Bài 1.14:
+So sánh hai số tự nhiên:
+a) 12 039 001 và 12 038 999;
+b) 2 521 098 và 2 521 100.
+Lời giải:
+a) Hai số có cùng số chữ số. So sánh từ trái sang phải, ở hàng nghìn có 9 > 8.
+Vậy: 12 039 001 > 12 038 999.
+b) Ở hàng trăm có 0 < 1.
+Vậy: 2 521 098 < 2 521 100.
+
+Bài 1.15:
+Khảo sát tuổi của các bạn trong nhóm: Nam (11 tuổi), An (12 tuổi), Bình (10 tuổi), Chi (11 tuổi).
+Hãy sắp xếp tên các bạn theo thứ tự tuổi tăng dần.
+Lời giải:
+So sánh tuổi: 10 < 11 = 11 < 12.
+Thứ tự tên tăng dần theo tuổi: Bình -> Nam, Chi -> An.
+
+Bài 1.16:
+Biểu diễn các số 0; 2; 5; 8 trên tia số nằm ngang.
+Lời giải:
+Vẽ tia số gốc 0. Điểm 2 cách gốc 0 hai đơn vị về bên phải, điểm 5 cách gốc 0 năm đơn vị, điểm 8 cách gốc 0 tám đơn vị.`,
+
+    4: ` BÀI 4: PHÉP CỘNG VÀ PHÉP TRỪ SỐ TỰ NHIÊN (SGK Trang 15 - 19)
+
+Bài 1.17:
+Tính nhẩm bằng cách áp dụng tính chất kết hợp của phép cộng:
+a) 99 + 67;               b) 199 + 43.
+Lời giải:
+a) 99 + 67 = (99 + 1) + 66 = 100 + 66 = 166.
+b) 199 + 43 = (199 + 1) + 42 = 200 + 42 = 242.
+
+Bài 1.18:
+Tính một cách hợp lý:
+a) 257 + 319 + 143 + 81;
+b) 35 . 12 + 65 . 12.
+Lời giải:
+a) (257 + 143) + (319 + 81) = 400 + 400 = 800.
+b) (35 + 65) . 12 = 100 . 12 = 1 200.
+
+Bài 1.19:
+Tìm số tự nhiên x, biết:
+a) x - 124 = 567;
+b) 1 215 - x = 415.
+Lời giải:
+a) x = 567 + 124 = 691.
+b) x = 1 215 - 415 = 800.
+
+Bài 1.20:
+Dân số Việt Nam năm 2019 là 96 208 984 người. Năm 2020, dân số Việt Nam tăng thêm 876 473 người. Tính dân số Việt Nam năm 2020.
+Lời giải:
+Dân số Việt Nam năm 2020 là:
+96 208 984 + 876 473 = 97 085 457 (người).
+
+Bài 1.21:
+Nhà bà Tâm có 3 chuồng gà. Chuồng thứ nhất có 25 con, chuồng thứ hai có 32 con, chuồng thứ ba có 43 con. Hỏi nhà bà Tâm có tất cả bao nhiêu con gà?
+Lời giải:
+Tổng số gà nhà bà Tâm là:
+25 + 32 + 43 = 25 + (32 + 43) = 25 + 75 = 100 (con).
+
+Bài 1.22:
+Tính giá trị của biểu thức:
+A = 2 021 - 100 + 99 - 98 + 97 - 96 + ... + 3 - 2 + 1.
+Lời giải:
+A = 2 021 - 100 + (99 - 98) + (97 - 96) + ... + (3 - 2) + 1
+Từ 2 đến 99 có 98 số hạng -> Ghép được 49 cặp, mỗi cặp có giá trị bằng 1.
+A = 2 021 - 100 + 49 . 1 + 1 = 1 921 + 49 + 1 = 1 971.`,
+
+    5: ` BÀI 5: PHÉP NHÂN VÀ PHÉP CHIA SỐ TỰ NHIÊN (SGK Trang 20 - 24)
+
+Bài 1.23:
+Tính nhẩm:
+a) 125 . 10;             b) 2 021 . 100;           c) 1 980 . 1000.
+Lời giải:
+a) 1 250.
+b) 202 100.
+c) 1 980 000.
+
+Bài 1.24:
+Tính một cách hợp lý:
+a) 25 . 13 . 4;          b) 125 . 27 . 8;          c) 50 . 38 . 2.
+Lời giải:
+a) (25 . 4) . 13 = 100 . 13 = 1 300.
+b) (125 . 8) . 27 = 1 000 . 27 = 27 000.
+c) (50 . 2) . 38 = 100 . 38 = 3 800.
+
+Bài 1.25:
+Tính nhẩm bằng cách áp dụng tính chất phân phối:
+a) 12 . 99;              b) 25 . 101.
+Lời giải:
+a) 12 . (100 - 1) = 12 . 100 - 12 . 1 = 1200 - 12 = 1 188.
+b) 25 . (100 + 1) = 25 . 100 + 25 . 1 = 2500 + 25 = 2 525.
+
+Bài 1.26:
+Thực hiện phép chia:
+a) 1 092 : 91;           b) 2 059 : 17.
+Lời giải:
+a) 1 092 : 91 = 12.
+b) 2 059 : 17 = 121.
+
+Bài 1.27:
+Tìm thương và số dư (nếu có) của các phép chia sau:
+a) 1 245 : 15;           b) 3 257 : 18.
+Lời giải:
+a) 1 245 : 15 = 83 (phép chia hết, dư 0).
+b) 3 257 : 18 = 180 (dư 17).
+
+Bài 1.28:
+Tổng điều tra dân số ngày 1/4/2019, tỉnh Bắc Giang có 1 803 950 người. Biết diện tích tỉnh Bắc Giang là 3 895 km². Tính mật độ dân số (người/km²) của tỉnh Bắc Giang (làm tròn đến hàng đơn vị).
+Lời giải:
+Mật độ dân số Bắc Giang là:
+1 803 950 : 3 895 ≈ 463 (người/km²).
+
+Bài 1.29:
+Một trường THCS có 420 học sinh đi tham quan. Cần thuê ít nhất bao nhiêu xe ô tô 45 chỗ để chở hết số học sinh trên?
+Lời giải:
+Ta có: 420 : 45 = 9 (dư 15).
+Vì còn dư 15 học sinh nên phải thuê thêm 1 xe nữa.
+Số xe ít nhất cần thuê là: 9 + 1 = 10 (xe).
+
+Bài 1.30:
+Một nhà máy sản xuất được 1 548 sản phẩm trong 12 ngày. Hỏi trung bình mỗi ngày nhà máy sản xuất được bao nhiêu sản phẩm?
+Lời giải:
+Mỗi ngày nhà máy sản xuất được:
+1 548 : 12 = 129 (sản phẩm).`,
+
+    6: ` BÀI 6: LŨY THỪA VỚI SỐ MŨ TỰ NHIÊN (SGK Trang 25 - 28)
+
+Bài 1.31:
+Viết các tích sau dưới dạng một lũy thừa:
+a) 7 . 7 . 7 . 7;         b) 10 . 10 . 10 . 10 . 10;        c) x . x . x . x . x . x.
+Lời giải:
+a) 7⁴.
+b) 10⁵.
+c) x⁶.
+
+Bài 1.32:
+Hoàn thành bảng sau vào vở:
+| Lũy thừa | Cơ số | Số mũ | Giá trị của lũy thừa |
+| 2⁵       | 2    | 5     | 32                   |
+| 3³       | 3    | 3     | 27                   |
+| 5²       | 5    | 2     | 25                   |
+Lời giải:
+- 2⁵ có cơ số 2, số mũ 5, giá trị = 32.
+- 3³ có cơ số 3, số mũ 3, giá trị = 27.
+- 5² có cơ số 5, số mũ 2, giá trị = 25.
+
+Bài 1.33:
+Viết kết quả các phép tính sau dưới dạng một lũy thừa:
+a) 3 . 3⁴;               b) 10⁵ : 10³;             c) 5² . 5⁷.
+Lời giải:
+a) 3¹⁺⁴ = 3⁵.
+b) 10⁵⁻³ = 10².
+c) 5²⁺⁷ = 5⁹.
+
+Bài 1.34:
+So sánh:
+a) 2⁶ và 8²;             b) 5³ và 3⁵.
+Lời giải:
+a) 2⁶ = 64; 8² = 64 -> 2⁶ = 8².
+b) 5³ = 125; 3⁵ = 243. Vì 125 < 243 nên 5³ < 3⁵.
+
+Bài 1.35:
+Khối lượng của Trái Đất khoảng 6 . 10²⁴ kg. Khối lượng của Mặt Trăng khoảng 7 . 10²² kg. Khối lượng Trái Đất gấp khoảng bao nhiêu lần khối lượng Mặt Trăng?
+Lời giải:
+Tỉ số khối lượng Trái Đất và Mặt Trăng là:
+(6 . 10²⁴) : (7 . 10²²) = (6 : 7) . 10²⁴⁻²² = (6/7) . 100 ≈ 85,7 (lần).
+Vậy khối lượng Trái Đất gấp khoảng 86 lần khối lượng Mặt Trăng.`,
+
+    7: ` BÀI 7: THỨ TỰ THỰC HIỆN CÁC PHÉP TÍNH (SGK Trang 29 - 30)
+
+Bài 1.36:
+Tính giá trị của biểu thức:
+a) 2³ . 9 - 50;                     b) 5 . 2² - 18 : 3.
+Lời giải:
+a) 2³ . 9 - 50 = 8 . 9 - 50 = 72 - 50 = 22.
+b) 5 . 4 - 6 = 20 - 6 = 14.
+
+Bài 1.37:
+Tính giá trị biểu thức:
+a) 120 - [30 - (4 - 1)²];          b) 100 : {2 . [52 - (35 - 8)]}.
+Lời giải:
+a) 120 - [30 - 3²] = 120 - [30 - 9] = 120 - 21 = 99.
+b) 100 : {2 . [52 - 27]} = 100 : {2 . 25} = 100 : 50 = 2.
+
+Bài 1.38:
+Tìm số tự nhiên x, biết:
+a) (x - 35) - 120 = 0;             b) 156 - (x + 61) = 82.
+Lời giải:
+a) x - 35 = 120 -> x = 120 + 35 = 155.
+b) x + 61 = 156 - 82 = 74 -> x = 74 - 61 = 13.
+
+Bài 1.39:
+Tìm x, biết:
+a) 84 : x và 12 < x < 20 (Biết 84 chia hết cho x);
+b) 5 .(x + 12) = 100.
+Lời giải:
+a) 84 chia hết cho 14 (vì 84 : 14 = 6). Thỏa mãn 12 < 14 < 20 -> x = 14.
+b) x + 12 = 100 : 5 = 20 -> x = 20 - 12 = 8.
+
+Bài 1.40:
+Tính giá trị biểu thức: A = 3² . 10³ + 2² . 10² + 5 . 10 + 2.
+Lời giải:
+A = 9 . 1000 + 4 . 100 + 50 + 2 = 9000 + 400 + 50 + 2 = 9 452.
+
+Bài 1.41:
+Lập bảng giá trị biểu thức P = 2n + 1 với n thuộc tập {0; 1; 2; 3; 4}.
+Lời giải:
+- n = 0 -> P = 1.
+- n = 1 -> P = 3.
+- n = 2 -> P = 5.
+- n = 3 -> P = 7.
+- n = 4 -> P = 9.
+
+Bài 1.42:
+Sử dụng máy tính cầm tay để tính: 3²5 + 204 : 12.
+Lời giải:
+Kết quả: 325 + 17 = 342.
+
+Bài 1.43:
+Một người đi xe máy từ A đến B với vận tốc 30 km/h hết 2 giờ. Sau đó đi tiếp từ B đến C với vận tốc 40 km/h hết 3 giờ. Tính tổng quãng đường AC.
+Lời giải:
+Quãng đường AB: 30 . 2 = 60 (km).
+Quãng đường BC: 40 . 3 = 120 (km).
+Quãng đường AC: 60 + 120 = 180 (km).
+
+Bài 1.44:
+Tìm x biết: 3 . (x - 2) + 15 = 24.
+Lời giải:
+3 . (x - 2) = 24 - 15 = 9
+x - 2 = 9 : 3 = 3
+x = 3 + 2 = 5.
+
+Bài 1.45:
+Cho biểu thức B = (100 - 1).(100 - 2).(100 - 3)...(100 - n). Biết tích trên có đúng 100 thừa số. Tính giá trị của B.
+Lời giải:
+Thừa số thứ 100 của biểu thức là (100 - 100) = 0.
+Vì trong tích có chứa thừa số 0 nên B = 0.`,
+
+    8: ` 📖 LỜI GIẢI BÀI TẬP CUỐI CHƯƠNG 1 (SGK Trang 33 - 34)
+
+Bài 1.46:
+Cho tập hợp A = {x ∈ N | 7 < x ≤ 11}.
+a) Viết tập hợp A bằng cách liệt kê các phần tử.
+b) Trong các số 7; 8; 11; 12, số nào thuộc A, số nào không thuộc A?
+Lời giải:
+a) A = {8; 9; 10; 11}.
+b) 7 ∉ A; 8 ∈ A; 11 ∈ A; 12 ∉ A.
+
+Bài 1.47:
+Biểu diễn các số 12; 21; 29 dưới dạng số La Mã.
+Lời giải:
+- 12 = XII.
+- 21 = XXI.
+- 29 = XXIX.
+
+Bài 1.48:
+Tính nhẩm nhanh:
+a) 28 + 145 + 72;               b) 25 . 19 . 4;             c) 36 . 18 + 36 . 82.
+Lời giải:
+a) (28 + 72) + 145 = 100 + 145 = 245.
+b) (25 . 4) . 19 = 100 . 19 = 1 900.
+c) 36 . (18 + 82) = 36 . 100 = 3 600.
+
+Bài 1.49:
+Thực hiện phép tính:
+a) 125 - 2 . 3²;                 b) 200 : [119 - (25 - 2²)].
+Lời giải:
+a) 125 - 2 . 9 = 125 - 18 = 107.
+b) 200 : [119 - (25 - 4)] = 200 : [119 - 21] = 200 : 98 (Xem lại đề bài chính xác SGK: 200 : [119 - (25 - 2³)] = 200 : [119 - 19] = 200 : 100 = 2).
+
+Bài 1.50:
+Tìm số tự nhiên x, biết:
+a) 5 . (x - 3) = 45;              b) 2³ + (x - 10) = 35.
+Lời giải:
+a) x - 3 = 45 : 5 = 9 -> x = 9 + 3 = 12.
+b) 8 + (x - 10) = 35 -> x - 10 = 27 -> x = 37.
+
+Bài 1.51:
+Viết kết quả dưới dạng lũy thừa:
+a) 3³ . 3⁴;                      b) 10⁷ : 10⁴;              c) (2²)³.
+Lời giải:
+a) 3³⁺⁴ = 3⁷.
+b) 10⁷⁻⁴ = 10³.
+c) 2²˙³ = 2⁶.
+
+Bài 1.52:
+Một diện tích rừng tự nhiên là 14 600 000 ha. Viết số này dưới dạng tích của một số với một lũy thừa của 10.
+Lời giải:
+14 600 000 = 146 . 100 000 = 146 . 10⁵ (ha).
+
+Bài 1.53:
+Mẹ mua 2kg cam giá 35 000 đồng/kg và 3kg táo giá 45 000 đồng/kg. Mẹ đưa tờ tiền 500 000 đồng. Hỏi cô bán hàng phải trả lại mẹ bao nhiêu tiền?
+Lời giải:
+Tổng số tiền mua cam và táo là:
+2 . 35 000 + 3 . 45 000 = 70 000 + 135 000 = 205 000 (đồng).
+Số tiền cô bán hàng trả lại là:
+500 000 - 205 000 = 295 000 (đồng).
+
+Bài 1.54:
+Một phòng học hình chữ nhật có chiều dài 8m, chiều rộng 6m. Người ta lát nền bằng các viên gạch vuông cạnh 40cm. Hỏi cần bao nhiêu viên gạch để lát kín nền phòng học?
+Lời giải:
+Diện tích phòng học: 8 . 6 = 48 (m²) = 480 000 cm².
+Diện tích 1 viên gạch: 40 . 40 = 1 600 cm².
+Số viên gạch cần mua là: 480 000 : 1 600 = 300 (viên).
+
+Bài 1.55:
+Cho bảng số liệu quãng đường từ Hà Nội đi các tỉnh:
+Hà Nội - Nam Định: 90 km.
+Hà Nội - Hải Phòng: 102 km.
+Hà Nội - Thanh Hóa: 153 km.
+Hỏi quãng đường nào dài nhất, quãng đường nào ngắn nhất?
+Lời giải:
+So sánh: 90 km < 102 km < 153 km.
+Quãng đường dài nhất: Hà Nội - Thanh Hóa (153 km).
+Quãng đường ngắn nhất: Hà Nội - Nam Định (90 km).
+
+Bài 1.56:
+Tính giá trị biểu thức: A = 1 + 2 + 3 + ... + 100.
+Lời giải:
+Số số hạng: (100 - 1) + 1 = 100.
+Tổng A = (100 + 1) . 100 : 2 = 101 . 50 = 5 050.
+
+Bài 1.57:
+So sánh A và B không tính giá trị:
+A = 2020 . 2022 và B = 2021 . 2021.
+Lời giải:
+A = (2021 - 1).(2021 + 1) = 2021² - 1.
+B = 2021².
+Vì 2021² - 1 < 2021² nên A < B.
+
+Bài 1.58:
+Tìm số tự nhiên n sao cho (n + 5) chia hết cho (n + 1).
+Lời giải:
+Ta có: n + 5 = (n + 1) + 4.
+Để (n + 5) chia hết cho (n + 1) thì 4 phải chia hết cho (n + 1).
+Các ước của 4 là {1; 2; 4}.
+- n + 1 = 1 -> n = 0.
+- n + 1 = 2 -> n = 1.
+- n + 1 = 4 -> n = 3.
+Vậy n ∈ {0; 1; 3}.
+
+Bài 1.59:
+Cho S = 1 + 3 + 3² + 3³ + ... + 3⁹⁹. Chứng minh S chia hết cho 4.
+Lời giải:
+Ghép 2 số hạng liên tiếp thành từng nhóm:
+S = (1 + 3) + (3² + 3³) + ... + (3⁹⁸ + 3⁹⁹)
+S = 4 + 3².(1 + 3) + ... + 3⁹⁸.(1 + 3)
+S = 4 + 3².4 + ... + 3⁹⁸.4
+S = 4 . (1 + 3² + ... + 3⁹⁸) chia hết cho 4 (đpcm).`
+};
+
+// --- HÀM TẢI LỜI GIẢI SGK ---
+function loadSgkSolution() {
+    const selectedLesson = document.getElementById('select-lesson-sgk').value;
+    const displayBox = document.getElementById('sgk-display');
+    
+    // Tải dữ liệu từ bộ nhớ nếu có chỉnh sửa, nếu không dùng mặc định
+    const currentSolutions = JSON.parse(localStorage.getItem('sgkSolutions')) || sgkSolutions;
+    
+    displayBox.innerText = currentSolutions[selectedLesson] || "Chưa có lời giải cho bài học này.";
+}
+
+// --- TẢI VÀ LƯU DỮ LIỆU LOCALSTORAGE ---
+function getSummaries() { return JSON.parse(localStorage.getItem('summaries')) || defaultSummaries; }
+function getQuizzes() { return JSON.parse(localStorage.getItem('quizzes')) || defaultQuizzes; }
+function getExam() { return JSON.parse(localStorage.getItem('exam')) || defaultExam; }
+
+function loadSummary() {
+    const lesson = document.getElementById('select-lesson-summary').value;
+    document.getElementById('summary-display').innerText = getSummaries()[lesson];
+}
+
+function loadQuiz() {
+    const lesson = document.getElementById('select-lesson-quiz').value;
+    const questions = getQuizzes()[lesson] || [];
+    const container = document.getElementById('quiz-container');
+    container.innerHTML = "";
+
+    const levelBadges = {
+        biet: '<span class="badge bg-biet">Nhận biết</span>',
+        hieu: '<span class="badge bg-hieu">Thông hiểu</span>',
+        vdt: '<span class="badge bg-vdt">Vận dụng thấp</span>',
+        vdc: '<span class="badge bg-vdc">Vận dụng cao</span>'
+    };
+
+    questions.forEach((q, qIndex) => {
+        let optsHtml = q.options.map((opt, oIndex) => 
+            `<button class="option-btn" onclick="checkQuizAnswer(${lesson}, ${qIndex}, ${oIndex}, this)">${opt}</button>`
+        ).join('');
+
+        container.innerHTML += `
+            <div class="card" id="quiz-card-${qIndex}">
+                ${levelBadges[q.level]}
+                <p style="font-weight: bold; font-size: 1.05rem;">${q.text}</p>
+                <div>${optsHtml}</div>
+                <div class="feedback" id="feedback-${qIndex}"></div>
+            </div>
+        `;
+    });
+}
+
+function checkQuizAnswer(lesson, qIndex, selectedOpt, btn) {
+    const q = getQuizzes()[lesson][qIndex];
+    const card = document.getElementById(`quiz-card-${qIndex}`);
+    const feedback = document.getElementById(`feedback-${qIndex}`);
+    const buttons = card.querySelectorAll('.option-btn');
+
+    buttons.forEach(b => b.disabled = true);
+
+    if (selectedOpt === q.correct) {
+        btn.style.background = "#2ecc71";
+        btn.style.color = "white";
+        feedback.className = "feedback correct";
+        feedback.innerHTML = `✅ Chính xác! <br><em>Lời giải: ${q.explain}</em>`;
+    } else {
+        btn.style.background = "#e74c3c";
+        btn.style.color = "white";
+        buttons[q.correct].style.background = "#2ecc71";
+        buttons[q.correct].style.color = "white";
+        feedback.className = "feedback incorrect";
+        feedback.innerHTML = `❌ Sai rồi! Đáp án đúng là <strong>${q.options[q.correct]}</strong>.<br><em>Lời giải: ${q.explain}</em>`;
+    }
+    feedback.style.display = "block";
+}
+
+function loadExam() {
+    const examQuestions = getExam();
+    const container = document.getElementById('exam-questions');
+    container.innerHTML = "";
+
+    const levelBadges = {
+        biet: '<span class="badge bg-biet">Nhận biết</span>',
+        hieu: '<span class="badge bg-hieu">Thông hiểu</span>',
+        vdt: '<span class="badge bg-vdt">Vận dụng thấp</span>',
+        vdc: '<span class="badge bg-vdc">Vận dụng cao</span>'
+    };
+
+    examQuestions.forEach((q, qIndex) => {
+        let optsHtml = q.options.map((opt, oIndex) => `
+            <label style="display: block; margin: 0.4rem 0; cursor: pointer;">
+                <input type="radio" name="exam-q-${qIndex}" value="${oIndex}"> ${opt}
+            </label>
+        `).join('');
+
+        container.innerHTML += `
+            <div class="card" style="margin-bottom: 1rem;" id="exam-card-${qIndex}">
+                ${levelBadges[q.level]}
+                <p style="font-weight: bold;">Câu ${qIndex + 1}: ${q.text}</p>
+                <div style="margin-left: 0.5rem;">${optsHtml}</div>
+                <div class="feedback" id="exam-feedback-${qIndex}"></div>
+            </div>
+        `;
+    });
+}
+
+function submitExam() {
+    const examQuestions = getExam();
+    let score = 0;
+    
+    examQuestions.forEach((q, qIndex) => {
+        const selected = document.querySelector(`input[name="exam-q-${qIndex}"]:checked`);
+        const feedback = document.getElementById(`exam-feedback-${qIndex}`);
+        
+        if (selected && parseInt(selected.value) === q.correct) {
+            score += 1;
+            feedback.className = "feedback correct";
+            feedback.innerHTML = `✅ Đúng! (+1 điểm)`;
+        } else {
+            feedback.className = "feedback incorrect";
+            feedback.innerHTML = `❌ Sai. Đáp án đúng là: <strong>${q.options[q.correct]}</strong>.<br><em>${q.explain}</em>`;
+        }
+        feedback.style.display = "block";
+    });
+
+    const scoreBox = document.getElementById('exam-score-box');
+    const scoreText = document.getElementById('score-text');
+    const scoreDetails = document.getElementById('score-details');
+
+    scoreText.innerText = `KẾT QUẢ: ${score} / 10 ĐIỂM`;
+    if (score >= 8) scoreDetails.innerText = "🌟 Xuất sắc! Bạn đã nắm chắc kiến thức Chương 1.";
+    else if (score >= 5) scoreDetails.innerText = "👍 Khá tốt! Hãy ôn lại các câu làm sai nhé.";
+    else scoreDetails.innerText = "⚠️ Bạn cần ôn tập kĩ lại các bài học trong Chương 1!";
+
+    scoreBox.style.display = "block";
+    scoreBox.scrollIntoView({ behavior: 'smooth' });
+}
+
+// --- QUẢN TRỊ TÙY BIẾN NỘI DUNG (TAB 4) ---
+function saveAdminSummary() {
+    const lesson = document.getElementById('admin-summary-lesson').value;
+    const text = document.getElementById('admin-summary-input').value;
+    if (!text.trim()) return alert("Vui lòng nhập nội dung!");
+
+    const summaries = getSummaries();
+    summaries[lesson] = text;
+    localStorage.setItem('summaries', JSON.stringify(summaries));
+    alert("Cập nhật Lý thuyết Tab 1 thành công!");
+    loadSummary();
+}
+
+function addAdminQuiz() {
+    const lesson = document.getElementById('admin-quiz-lesson').value;
+    const level = document.getElementById('admin-quiz-level').value;
+    const text = document.getElementById('admin-quiz-text').value;
+    const opts = [
+        "A. " + document.getElementById('admin-quiz-opt0').value,
+        "B. " + document.getElementById('admin-quiz-opt1').value,
+        "C. " + document.getElementById('admin-quiz-opt2').value,
+        "D. " + document.getElementById('admin-quiz-opt3').value
+    ];
+    const correct = parseInt(document.getElementById('admin-quiz-correct').value);
+    const explain = document.getElementById('admin-quiz-explain').value;
+
+    if (!text.trim()) return alert("Vui lòng điền nội dung câu hỏi!");
+
+    const quizzes = getQuizzes();
+    if (!quizzes[lesson]) quizzes[lesson] = [];
+    quizzes[lesson].push({ level, text, options: opts, correct, explain });
+    
+    localStorage.setItem('quizzes', JSON.stringify(quizzes));
+    alert("Thêm câu hỏi luyện tập mới thành công!");
+    populateQuizSelect();
+    loadQuiz();
+}
+
+function populateQuizSelect() {
+    const lesson = document.getElementById('edit-quiz-lesson').value;
+    const select = document.getElementById('edit-quiz-select');
+    const quizzes = getQuizzes()[lesson] || [];
+    select.innerHTML = "";
+    quizzes.forEach((q, i) => {
+        select.innerHTML += `<option value="${i}">Câu ${i + 1}: ${q.text.substring(0, 40)}...</option>`;
+    });
+    if (quizzes.length > 0) loadQuizToEdit();
+}
+
+function loadQuizToEdit() {
+    const lesson = document.getElementById('edit-quiz-lesson').value;
+    const index = document.getElementById('edit-quiz-select').value;
+    const q = getQuizzes()[lesson][index];
+    if (!q) return;
+
+    document.getElementById('edit-quiz-level').value = q.level;
+    document.getElementById('edit-quiz-text').value = q.text;
+    document.getElementById('edit-quiz-opt0').value = q.options[0].replace(/^A\.\s*/, '');
+    document.getElementById('edit-quiz-opt1').value = q.options[1].replace(/^B\.\s*/, '');
+    document.getElementById('edit-quiz-opt2').value = q.options[2].replace(/^C\.\s*/, '');
+    document.getElementById('edit-quiz-opt3').value = q.options[3].replace(/^D\.\s*/, '');
+    document.getElementById('edit-quiz-correct').value = q.correct;
+    document.getElementById('edit-quiz-explain').value = q.explain;
+}
+
+function updateAdminQuiz() {
+    const lesson = document.getElementById('edit-quiz-lesson').value;
+    const index = document.getElementById('edit-quiz-select').value;
+    const quizzes = getQuizzes();
+
+    quizzes[lesson][index] = {
+        level: document.getElementById('edit-quiz-level').value,
+        text: document.getElementById('edit-quiz-text').value,
+        options: [
+            "A. " + document.getElementById('edit-quiz-opt0').value,
+            "B. " + document.getElementById('edit-quiz-opt1').value,
+            "C. " + document.getElementById('edit-quiz-opt2').value,
+            "D. " + document.getElementById('edit-quiz-opt3').value
+        ],
+        correct: parseInt(document.getElementById('edit-quiz-correct').value),
+        explain: document.getElementById('edit-quiz-explain').value
+    };
+
+    localStorage.setItem('quizzes', JSON.stringify(quizzes));
+    alert("Cập nhật câu hỏi thành công!");
+    populateQuizSelect();
+    loadQuiz();
+}
+
+function deleteAdminQuiz() {
+    if (!confirm("Bạn có chắc chắn muốn xóa câu hỏi này?")) return;
+    const lesson = document.getElementById('edit-quiz-lesson').value;
+    const index = document.getElementById('edit-quiz-select').value;
+    const quizzes = getQuizzes();
+
+    quizzes[lesson].splice(index, 1);
+    localStorage.setItem('quizzes', JSON.stringify(quizzes));
+    alert("Đã xóa câu hỏi!");
+    populateQuizSelect();
+    loadQuiz();
+}
+
+function addAdminExam() {
+    const level = document.getElementById('admin-exam-level').value;
+    const text = document.getElementById('admin-exam-text').value;
+    const opts = [
+        "A. " + document.getElementById('admin-exam-opt0').value,
+        "B. " + document.getElementById('admin-exam-opt1').value,
+        "C. " + document.getElementById('admin-exam-opt2').value,
+        "D. " + document.getElementById('admin-exam-opt3').value
+    ];
+    const correct = parseInt(document.getElementById('admin-exam-correct').value);
+    const explain = document.getElementById('admin-exam-explain').value;
+
+    if (!text.trim()) return alert("Vui lòng nhập câu hỏi kiểm tra!");
+
+    const exam = getExam();
+    exam.push({ level, text, options: opts, correct, explain });
+    localStorage.setItem('exam', JSON.stringify(exam));
+    alert("Thêm câu hỏi kiểm tra thành công!");
+    populateExamSelect();
+    loadExam();
+}
+
+function populateExamSelect() {
+    const select = document.getElementById('edit-exam-select');
+    const exam = getExam();
+    select.innerHTML = "";
+    exam.forEach((q, i) => {
+        select.innerHTML += `<option value="${i}">Câu ${i + 1}: ${q.text.substring(0, 40)}...</option>`;
+    });
+    if (exam.length > 0) loadExamToEdit();
+}
+
+function loadExamToEdit() {
+    const index = document.getElementById('edit-exam-select').value;
+    const q = getExam()[index];
+    if (!q) return;
+
+    document.getElementById('edit-exam-level').value = q.level;
+    document.getElementById('edit-exam-text').value = q.text;
+    document.getElementById('edit-exam-opt0').value = q.options[0].replace(/^A\.\s*/, '');
+    document.getElementById('edit-exam-opt1').value = q.options[1].replace(/^B\.\s*/, '');
+    document.getElementById('edit-exam-opt2').value = q.options[2].replace(/^C\.\s*/, '');
+    document.getElementById('edit-exam-opt3').value = q.options[3].replace(/^D\.\s*/, '');
+    document.getElementById('edit-exam-correct').value = q.correct;
+    document.getElementById('edit-exam-explain').value = q.explain;
+}
+
+function updateAdminExam() {
+    const index = document.getElementById('edit-exam-select').value;
+    const exam = getExam();
+
+    exam[index] = {
+        level: document.getElementById('edit-exam-level').value,
+        text: document.getElementById('edit-exam-text').value,
+        options: [
+            "A. " + document.getElementById('edit-exam-opt0').value,
+            "B. " + document.getElementById('edit-exam-opt1').value,
+            "C. " + document.getElementById('edit-exam-opt2').value,
+            "D. " + document.getElementById('edit-exam-opt3').value
+        ],
+        correct: parseInt(document.getElementById('edit-exam-correct').value),
+        explain: document.getElementById('edit-exam-explain').value
+    };
+
+    localStorage.setItem('exam', JSON.stringify(exam));
+    alert("Cập nhật câu hỏi kiểm tra thành công!");
+    populateExamSelect();
+    loadExam();
+}
+
+function deleteAdminExam() {
+    if (!confirm("Xóa câu hỏi kiểm tra này?")) return;
+    const index = document.getElementById('edit-exam-select').value;
+    const exam = getExam();
+
+    exam.splice(index, 1);
+    localStorage.setItem('exam', JSON.stringify(exam));
+    alert("Đã xóa câu hỏi kiểm tra!");
+    populateExamSelect();
+    loadExam();
+}
+
+function resetAllData() {
+    if (confirm("⚠️ Bạn có chắc chắn muốn xóa toàn bộ tùy chỉnh và quay về dữ liệu gốc ban đầu?")) {
+        localStorage.clear();
+        alert("Đã khôi phục dữ liệu gốc!");
+        location.reload();
+    }
+}
+
+// Khởi chạy khi tải trang
+window.onload = function() {
+    loadSummary();
+    loadQuiz();
+    loadExam();
+    loadSgkSolution();
+    populateQuizSelect();
+    populateExamSelect();
+};
+</script>
+
+</body>
+</html>
